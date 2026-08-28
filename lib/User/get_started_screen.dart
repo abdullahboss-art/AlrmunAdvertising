@@ -54,9 +54,9 @@ class _GetStartedScreenState extends State<GetStartedScreen>
   // ============================================================
 
   static const List<String> _images = [
-    "images/assets/GetStarted_image1.png",
-    "images/assets/GetStarted_image2.png",
-    "images/assets/GetStarted_image3.png",
+    "images/assets/GetStarted1.png",
+    "images/assets/GetStarted2.png",
+    "images/assets/GetStarted3.png",
   ];
 
   // ============================================================
