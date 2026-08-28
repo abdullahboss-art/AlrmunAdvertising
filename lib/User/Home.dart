@@ -1,3 +1,4 @@
+import 'package:adverting_app/User/Estimated.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -191,10 +192,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    // TODO: hook up your real estimate flow here
-                  },
+                 onPressed: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const AdvertisingEstimatePage(),
+    ),
+  );
+},
                   child: const Text(
                     "Continue",
                     style: TextStyle(

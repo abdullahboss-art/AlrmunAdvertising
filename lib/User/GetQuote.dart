@@ -28,6 +28,10 @@ class _GetAQuotePageState
 
   final _formKey = GlobalKey<FormState>();
 
+final GlobalKey _resultKey = GlobalKey();
+
+final ScrollController _scrollController = ScrollController();
+
   // IMPORTANT:
   // Ye ab actual Quantity hai.
   final _quantityController =
@@ -102,26 +106,41 @@ class _GetAQuotePageState
   double get totalPrice =>
       squareFeet * pricePerSqFt;
 
-  @override
-  void dispose() {
-    _quantityController.dispose();
-    _widthController.dispose();
-    _heightController.dispose();
-    super.dispose();
+ @override
+void dispose() {
+  _quantityController.dispose();
+  _widthController.dispose();
+  _heightController.dispose();
+  _scrollController.dispose();
+  super.dispose();
+}
+void submitRequest() {
+  if (!_formKey.currentState!.validate()) {
+    return;
   }
 
-  void submitRequest() {
-    if (!_formKey.currentState!.validate()) {
-      return;
+  FocusScope.of(context).unfocus();
+
+  setState(() {
+    submitted = true;
+  });
+
+  // Wait until the result widget has been added to the tree
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!mounted) return;
+
+    final resultContext = _resultKey.currentContext;
+
+    if (resultContext != null) {
+      Scrollable.ensureVisible(
+        resultContext,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeInOutCubic,
+        alignment: 0.05,
+      );
     }
-
-    setState(() {
-      submitted = true;
-    });
-
-    FocusScope.of(context).unfocus();
-  }
-
+  });
+}
   String get whatsappMessage => '''
 Hello, I would like to request a quote.
 
@@ -269,14 +288,14 @@ Thank you.
       ),
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding:
-              const EdgeInsets.fromLTRB(
-            18,
-            10,
-            18,
-            30,
-          ),
+child: SingleChildScrollView(
+  controller: _scrollController,
+  padding: const EdgeInsets.fromLTRB(
+    18,
+    10,
+    18,
+    30,
+  ),
           child: Form(
             key: _formKey,
             child: Column(
@@ -533,10 +552,10 @@ Thank you.
   }
 
   Widget buildResult() {
-    return Container(
-      width: double.infinity,
-      padding:
-          const EdgeInsets.all(18),
+  return Container(
+    key: _resultKey,
+    width: double.infinity,
+    padding: const EdgeInsets.all(18),
       decoration:
           BoxDecoration(
         color:
