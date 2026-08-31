@@ -1,5 +1,6 @@
-import 'package:adverting_app/User/GetQuote.dart';
+
 import 'package:flutter/material.dart';
+import 'package:adverting_app/User/GetQuote.dart';
 
 class ServiceDetail extends StatelessWidget {
   final Map<String, String> service;
@@ -7,7 +8,12 @@ class ServiceDetail extends StatelessWidget {
   const ServiceDetail({
     super.key,
     required this.service,
+    required String serviceName,
   });
+
+  // ============================================================
+  // WHAT WE OFFER
+  // ============================================================
 
   List<String> getOffers(String title) {
     switch (title) {
@@ -63,50 +69,204 @@ class ServiceDetail extends StatelessWidget {
           "Sticker Printing",
         ];
 
+      case "Outdoor Advertising":
+        return [
+          "Social Media Marketing",
+          "Facebook Marketing",
+          "Instagram Marketing",
+          "Google Ads",
+          "Content Marketing",
+          "SEO",
+          "Brand Promotion",
+          "Online Advertising",
+          "Marketing Strategy",
+        ];
+
+      case "Branding":
+        return [
+          "Logo Design",
+          "Brand Identity",
+          "Business Cards",
+          "Letterhead Design",
+          "Brand Guidelines",
+          "Packaging Branding",
+          "Social Media Branding",
+          "Marketing Materials",
+          "Complete Brand Identity",
+        ];
+      case "Flex Printing":
+        return [
+          "Logo Design",
+          "Brand Identity",
+          "Business Cards",
+          "Letterhead Design",
+          "Brand Guidelines",
+          "Packaging Branding",
+          "Social Media Branding",
+          "Marketing Materials",
+          "Complete Brand Identity",
+        ];
+      case "Sign Boards":
+        return [
+          "Logo Design",
+          "Brand Identity",
+          "Business Cards",
+          "Letterhead Design",
+          "Brand Guidelines",
+          "Packaging Branding",
+          "Social Media Branding",
+          "Marketing Materials",
+          "Complete Brand Identity",
+        ];
+      case "3D Letters":
+        return [
+          "Logo Design",
+          "Brand Identity",
+          "Business Cards",
+          "Letterhead Design",
+          "Brand Guidelines",
+          "Packaging Branding",
+          "Social Media Branding",
+          "Marketing Materials",
+          "Complete Brand Identity",
+        ];
+
+      case "Business Cards":
+        return [
+          "Logo Design",
+          "Brand Identity",
+          "Business Cards",
+          "Letterhead Design",
+          "Brand Guidelines",
+          "Packaging Branding",
+          "Social Media Branding",
+          "Marketing Materials",
+          "Complete Brand Identity",
+        ];
+      case "Events & Exhibition":
+        return [
+          "Logo Design",
+          "Brand Identity",
+          "Business Cards",
+          "Letterhead Design",
+          "Brand Guidelines",
+          "Packaging Branding",
+          "Social Media Branding",
+          "Marketing Materials",
+          "Complete Brand Identity",
+        ];
       default:
         return [];
     }
   }
 
+  // ============================================================
+  // SERVICE COLOR
+  // ============================================================
+
+static const Color background = Color(0xFF07131B);
+  static const Color cardColor = Color(0xff171717);
+  static const Color accent = Color(0xff2FD6F0);
+
   @override
-  Widget build(BuildContext context) {
-    final offers = getOffers(service["title"] ?? "");
+  Widget build(BuildContext context) {  
+    final String title = service["title"] ?? "";
+    final String description = service["description"] ?? "";
+    final String image = service["image"] ?? "";
+
+    final List<String> offers = getOffers(title);
 
     return Scaffold(
-      backgroundColor: const Color(0xff0D0D0D),
+      backgroundColor: background,
+
+      // ========================================================
+      // APP BAR
+      // ========================================================
+
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: background,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        scrolledUnderElevation: 0,
+
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 19,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
+
+      // ========================================================
+      // BODY
+      // ========================================================
+
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// IMAGE
+
+            // ==================================================
+            // SERVICE IMAGE
+            // ==================================================
+
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(25),
                 bottomRight: Radius.circular(25),
               ),
-              child: Image.asset(
-                service["image"]!,
-                width: double.infinity,
-                height: 260,
-                fit: BoxFit.cover,
-              ),
+
+              child: image.isNotEmpty
+                  ? Image.asset(
+                      image,
+                      width: double.infinity,
+                      height: 260,
+                      fit: BoxFit.cover,
+
+                      errorBuilder: (
+                        context,
+                        error,
+                        stackTrace,
+                      ) {
+                        return _imagePlaceholder();
+                      },
+                    )
+                  : _imagePlaceholder(),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
 
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
+
                 children: [
-                  /// TITLE
+
+                  // ==================================================
+                  // SERVICE TITLE
+                  // ==================================================
+
                   Text(
-                    service["title"]!,
+                    title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 28,
@@ -114,11 +274,14 @@ class ServiceDetail extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 14),
 
-                  /// DESCRIPTION
+                  // ==================================================
+                  // DESCRIPTION
+                  // ==================================================
+
                   Text(
-                    service["description"]!,
+                    description,
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 15,
@@ -128,7 +291,10 @@ class ServiceDetail extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  /// HEADING
+                  // ==================================================
+                  // WHAT WE OFFER
+                  // ==================================================
+
                   const Text(
                     "What We Offer",
                     style: TextStyle(
@@ -138,82 +304,220 @@ class ServiceDetail extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 7),
 
-                  /// OFFER CARD
+                  const Text(
+                    "Here are the services and products you can get from us.",
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 12,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // ==================================================
+                  // OFFER LIST
+                  // ==================================================
+
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 12,
+                    ),
+
                     decoration: BoxDecoration(
-                      color: const Color(0xff171717),
-                      borderRadius: BorderRadius.circular(18),
+                      color: cardColor,
+                      borderRadius:
+                          BorderRadius.circular(18),
+
+                      border: Border.all(
+                        color: Colors.white.withOpacity(
+                          0.06,
+                        ),
+                      ),
                     ),
-                    child: Column(
-                      children: offers.map((item) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.check_circle,
-                                color: Color(0xff18D4D9),
-                                size: 22,
+
+                    child: offers.isEmpty
+                        ? const Padding(
+                            padding:
+                                EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
+
+                            child: Text(
+                              "Services available on request.",
+                              style: TextStyle(
+                                color: Colors.white60,
+                                fontSize: 14,
                               ),
+                            ),
+                          )
+                        : Column(
+                            children: List.generate(
+                              offers.length,
+                              (index) {
+                                final item =
+                                    offers[index];
 
-                              const SizedBox(width: 12),
-
-                              Expanded(
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 15,
+                                return Container(
+                                  padding:
+                                      const EdgeInsets
+                                          .symmetric(
+                                    vertical: 12,
                                   ),
-                                ),
-                              ),
-                            ],
+
+                                  decoration:
+                                      BoxDecoration(
+                                    border: index ==
+                                            offers.length -
+                                                1
+                                        ? null
+                                        : Border(
+                                            bottom:
+                                                BorderSide(
+                                              color: Colors
+                                                  .white
+                                                  .withOpacity(
+                                                0.05,
+                                              ),
+                                            ),
+                                          ),
+                                  ),
+
+                                  child: Row(
+                                    children: [
+
+                                      // CHECK ICON
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+
+                                        decoration:
+                                            BoxDecoration(
+                                          color: accent
+                                              .withOpacity(
+                                            0.10,
+                                          ),
+
+                                          borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                            9,
+                                          ),
+                                        ),
+
+                                        child: const Icon(
+                                          Icons
+                                              .check_rounded,
+                                          color: accent,
+                                          size: 18,
+                                        ),
+                                      ),
+
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+
+                                      // SERVICE NAME
+                                      Expanded(
+                                        child: Text(
+                                          item,
+                                          style:
+                                              const TextStyle(
+                                            color:
+                                                Colors.white,
+                                            fontSize: 14,
+                                            fontWeight:
+                                                FontWeight
+                                                    .w500,
+                                          ),
+                                        ),
+                                      ),
+
+                                      const Icon(
+                                        Icons
+                                            .arrow_forward_ios_rounded,
+                                        color:
+                                            Colors.white24,
+                                        size: 13,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      }).toList(),
-                    ),
                   ),
 
                   const SizedBox(height: 35),
 
-                  /// GET A QUOTE BUTTON
+                  // ==================================================
+                  // GET A QUOTE
+                  // ==================================================
+
                   SizedBox(
                     width: double.infinity,
                     height: 55,
+
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff18D4D9),
+                      style:
+                          ElevatedButton.styleFrom(
+                        backgroundColor: accent,
+                        foregroundColor: Colors.black,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+
+                        shape:
+                            RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(
+                            30,
+                          ),
                         ),
                       ),
+
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => GetAQuotePage(
-                              serviceTitle: service["title"] ?? "",
+                            builder: (context) =>
+                                GetAQuotePage(
+                              serviceTitle: title,
                             ),
                           ),
                         );
                       },
-                      child: const Text(
-                        "Get a Quote",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+                      child: const Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.center,
+
+                        children: [
+
+                          Icon(
+                            Icons
+                                .request_quote_outlined,
+                            size: 19,
+                          ),
+
+                          SizedBox(width: 8),
+
+                          Text(
+                            "Get a Quote",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -222,4 +526,25 @@ class ServiceDetail extends StatelessWidget {
       ),
     );
   }
+
+  // ============================================================
+  // IMAGE PLACEHOLDER
+  // ============================================================
+
+  Widget _imagePlaceholder() {
+    return Container(
+      width: double.infinity,
+      height: 260,
+      color: const Color(0xff171717),
+
+      child: const Center(
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          color: Colors.white38,
+          size: 60,
+        ),
+      ),
+    );
+  }
 }
+

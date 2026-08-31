@@ -132,21 +132,7 @@ class ProfilePage extends StatelessWidget {
                 },
               ),
 
-              // =====================================================
-              // SERVICES
-              // =====================================================
-
-              _ProfileTile(
-                icon: Icons.design_services_outlined,
-                title: "Services",
-                onTap: () {
-                  onTabChange?.call(1);
-                },
-              ),
-
-              // =====================================================
-              // GALLERY
-              // =====================================================
+             
 
               _ProfileTile(
                 icon: Icons.photo_library_outlined,

@@ -16,9 +16,7 @@ class GetStartedScreen extends StatefulWidget {
 
 class _GetStartedScreenState extends State<GetStartedScreen>
     with TickerProviderStateMixin {
-  // ============================================================
-  // ANIMATIONS
-  // ============================================================
+
 
   late final AnimationController _entranceController;
   late final Animation<double> _fadeAnimation;
@@ -31,11 +29,9 @@ class _GetStartedScreenState extends State<GetStartedScreen>
 
   int _activePage = 0;
 
-  // ============================================================
-  // COLORS
-  // ============================================================
 
-  static const Color bgDark = Color(0xFF06131C);
+
+  // static const Color bgDark = Color(0xFF06131C);
   static const Color accent = Color(0xFF16C8D8);
   static const Color accentLight = Color(0xFF9FEFF5);
 
@@ -49,9 +45,6 @@ class _GetStartedScreenState extends State<GetStartedScreen>
     "images/assets/GetStarted3.png",
   ];
 
-  // ============================================================
-  // TITLES
-  // ============================================================
 
   static const List<String> _titles = [
     "Build Your",
@@ -176,9 +169,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
     _startAutoPlay();
   }
 
-  // ============================================================
-  // SELECT PAGE
-  // ============================================================
+
 
   void _selectPage(int index) {
     if (!mounted) return;
@@ -190,9 +181,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
     _startAutoPlay();
   }
 
-  // ============================================================
-  // GET STARTED NAVIGATION
-  // ============================================================
+
 
   void _handleGetStarted() {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -222,9 +211,6 @@ class _GetStartedScreenState extends State<GetStartedScreen>
     }
   }
 
-  // ============================================================
-  // DISPOSE
-  // ============================================================
 
   @override
   void dispose() {
@@ -242,32 +228,19 @@ class _GetStartedScreenState extends State<GetStartedScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: bgDark,
+      // backgroundColor: bgDark,
 
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // ======================================================
-          // BACKGROUND
-          // ======================================================
+         
 
           _buildFullScreenBackground(),
 
-          // ======================================================
-          // DARK OVERLAY
-          // ======================================================
-
-          _buildDarkOverlay(),
-
-          // ======================================================
-          // CYAN GLOW
-          // ======================================================
+        
 
           _buildBackgroundGlow(),
 
-          // ======================================================
-          // MAIN CONTENT
-          // ======================================================
 
           SafeArea(
             child: FadeTransition(
@@ -347,16 +320,16 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                   width: double.infinity,
                   height: double.infinity,
 
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        bgDark,
-                        Color(0xFF0C2530),
-                      ],
-                    ),
-                  ),
+                  // decoration: const BoxDecoration(
+                  //   gradient: LinearGradient(
+                  //     begin: Alignment.topLeft,
+                  //     end: Alignment.bottomRight,
+                  //     // colors: [
+                  //     //   bgDark,
+                  //     //   Color(0xFF0C2530),
+                  //     // ],
+                  //   ),
+                  // ),
 
                   child: Center(
                     child: Icon(
@@ -379,30 +352,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
   // DARK OVERLAY
   // ============================================================
 
-  Widget _buildDarkOverlay() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-
-          colors: [
-            bgDark.withOpacity(0.70),
-            bgDark.withOpacity(0.25),
-            bgDark.withOpacity(0.35),
-            bgDark.withOpacity(0.92),
-          ],
-
-          stops: const [
-            0.0,
-            0.35,
-            0.58,
-            1.0,
-          ],
-        ),
-      ),
-    );
-  }
+  
 
   // ============================================================
   // BACKGROUND GLOW
@@ -479,21 +429,10 @@ class _GetStartedScreenState extends State<GetStartedScreen>
           // ------------------------------------------------------
 
           Container(
-            width: 90,
-            height: 70,
+            width: 100,
+            height: 100,
             padding: const EdgeInsets.all(4),
 
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.30),
-
-              borderRadius:
-                  BorderRadius.circular(13),
-
-              border: Border.all(
-                color: accent.withOpacity(0.30),
-                width: 1,
-              ),
-            ),
 
             child: Image.asset(
               "images/assets/Alrmun_logo.png",
@@ -507,24 +446,7 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                 stackTrace,
               ) {
                 return Container(
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(10),
-
-                    gradient:
-                        const LinearGradient(
-                      colors: [
-                        accent,
-                        accentLight,
-                      ],
-                    ),
-                  ),
-
-                  child: const Icon(
-                    Icons.auto_awesome,
-                    color: bgDark,
-                    size: 21,
-                  ),
+               
                 );
               },
             ),
@@ -534,60 +456,60 @@ class _GetStartedScreenState extends State<GetStartedScreen>
           // EXPLORE
           // ------------------------------------------------------
 
-          TextButton(
-            onPressed: () {
-              // Explore action
-            },
+          // TextButton(
+          //   onPressed: () {
+          //     // Explore action
+          //   },
 
-            style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 4,
-                vertical: 6,
-              ),
-            ),
+          //   style: TextButton.styleFrom(
+          //     padding: const EdgeInsets.symmetric(
+          //       horizontal: 4,
+          //       vertical: 6,
+          //     ),
+          //   ),
 
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 11,
-                vertical: 7,
-              ),
+          //   child: Container(
+          //     padding: const EdgeInsets.symmetric(
+          //       horizontal: 11,
+          //       vertical: 7,
+          //     ),
 
-              decoration: BoxDecoration(
-                color:
-                    Colors.black.withOpacity(0.25),
+          //     decoration: BoxDecoration(
+          //       color:
+          //           Colors.black.withOpacity(0.25),
 
-                borderRadius:
-                    BorderRadius.circular(20),
+          //       borderRadius:
+          //           BorderRadius.circular(20),
 
-                border: Border.all(
-                  color:
-                      Colors.white.withOpacity(0.12),
-                ),
-              ),
+          //       border: Border.all(
+          //         color:
+          //             Colors.white.withOpacity(0.12),
+          //       ),
+          //     ),
 
-              child: const Row(
-                children: [
-                  Text(
-                    "Explore",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight:
-                          FontWeight.w500,
-                    ),
-                  ),
+          //     child: const Row(
+          //       children: [
+          //         Text(
+          //           "Explore",
+          //           style: TextStyle(
+          //             color: Colors.white,
+          //             fontSize: 13,
+          //             fontWeight:
+          //                 FontWeight.w500,
+          //           ),
+          //         ),
 
-                  SizedBox(width: 5),
+          //         SizedBox(width: 5),
 
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    color: accent,
-                    size: 11,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          //         Icon(
+          //           Icons.arrow_forward_ios_rounded,
+          //           color: accent,
+          //           size: 11,
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

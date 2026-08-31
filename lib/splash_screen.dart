@@ -201,6 +201,7 @@ void _goNext() {
         );
       },
     ),
+
   );
 }
   @override
@@ -273,62 +274,103 @@ void _goNext() {
                 // LOGO
                 // ====================================================
 
-                FadeTransition(
-                  opacity: _logoOpacity,
-                  child: ScaleTransition(
-                    scale: _logoScale,
-                    child: AnimatedBuilder(
-                      animation: _glow,
-                      builder: (context, child) {
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Glow
-                            Container(
-                              width: 190 * _glow.value,
-                              height: 190 * _glow.value,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF16C8D8)
-                                        .withOpacity(0.18),
-                                    blurRadius: 90,
-                                    spreadRadius: 15,
-                                  ),
-                                ],
-                              ),
-                            ),
+                // FadeTransition(
+                //   opacity: _logoOpacity,
+                //   child: ScaleTransition(
+                //     scale: _logoScale,
+                //     child: AnimatedBuilder(
+                //       animation: _glow,
+                //       builder: (context, child) {
+                //         return Stack(
+                //           alignment: Alignment.center,
+                //           children: [
+                //             // Glow
+                //             Container(
+                //               width: 190 * _glow.value,
+                //               height: 190 * _glow.value,
+                //               decoration: BoxDecoration(
+                //                 shape: BoxShape.circle,
+                //                 boxShadow: [
+                //                   BoxShadow(
+                //                     color: const Color(0xFF16C8D8)
+                //                         .withOpacity(0.18),
+                //                     blurRadius: 90,
+                //                     spreadRadius: 15,
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
 
-                            // Inner circle
-                            Container(
-                              width: 145,
-                              height: 145,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: const Color(0xFF16C8D8)
-                                    .withOpacity(0.025),
-                                border: Border.all(
-                                  color: const Color(0xFF16C8D8)
-                                      .withOpacity(0.15),
-                                  width: 1,
-                                ),
-                              ),
-                            ),
+                //             // Inner circle
+                //             Container(
+                //               width: 145,
+                //               height: 145,
+                //               decoration: BoxDecoration(
+                //                 shape: BoxShape.circle,
+                //                 color: const Color(0xFF16C8D8)
+                //                     .withOpacity(0.025),
+                //                 border: Border.all(
+                //                   color: const Color(0xFF16C8D8)
+                //                       .withOpacity(0.15),
+                //                   width: 1,
+                //                 ),
+                //               ),
+                //             ),
 
-                            // Logo
-                            Image.asset(
-                              "images/assets/Alrmun_logo.png",
-                              width: 125,
-                              height: 125,
-                              fit: BoxFit.contain,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                //             // Logo
+                //             Image.asset(
+                //               "images/assets/Alrmun_logo.png",
+                //               width: 125,
+                //               height: 125,
+                //               fit: BoxFit.contain,
+                //             ),
+                //           ],
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // ),
+
+FadeTransition(
+  opacity: _logoOpacity,
+  child: ScaleTransition(
+    scale: _logoScale,
+    child: AnimatedBuilder(
+      animation: _glow,
+      builder: (context, child) {
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Soft Glow — background circle/border removed
+            Container(
+              width: 210 * _glow.value,
+              height: 210 * _glow.value,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                // boxShadow: [
+                //   BoxShadow(
+                //     color: const Color(0xFF16C8D8).withOpacity(0.20),
+                //     blurRadius: 85,
+                //     spreadRadius: 8,
+                //   ),
+                // ],
+              ),
+            ),
+
+            // Logo — larger and no background/border
+            Image.asset(
+              "images/assets/Alrmun_logo.png",
+              width: 155,
+              height: 155,
+              fit: BoxFit.contain,
+            ),
+          ],
+        );
+      },
+    ),
+  ),
+),
+
 
                 const SizedBox(height: 32),
 

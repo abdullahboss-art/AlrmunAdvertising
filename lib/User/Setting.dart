@@ -463,18 +463,7 @@ to our team.
 
                       _divider(),
 
-                      _actionTile(
-                        icon: Icons.language_outlined,
-                        title: 'Language',
-                        subtitle: 'English',
-                        trailing: Icon(
-                          Icons.chevron_right_rounded,
-                          color: _secondaryTextColor,
-                        ),
-                        onTap: () {
-                          _showLanguageDialog();
-                        },
-                      ),
+                    
 
                       _divider(),
 

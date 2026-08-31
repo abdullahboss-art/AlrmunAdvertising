@@ -4,7 +4,7 @@ import 'package:adverting_app/User/Contact.dart';
 import 'package:adverting_app/User/Gallery.dart';
 import 'package:adverting_app/User/Home.dart';
 import 'package:adverting_app/User/Profile.dart';
-import 'package:adverting_app/User/Service.dart';
+import 'package:adverting_app/User/AboutUs.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
@@ -20,20 +20,34 @@ class CustomBottomNavBar extends StatefulWidget {
       _CustomBottomNavBarState();
 }
 
-class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+class _CustomBottomNavBarState
+    extends State<CustomBottomNavBar> {
   late int currentIndex;
+
+  // =========================================================
+  // NAVIGATION ICONS
+  // =========================================================
 
   final List<IconData> icons = [
     Icons.home_rounded,
-    Icons.dashboard_customize_rounded,
+
+    // ABOUT US
+    Icons.business_rounded,
+
     Icons.photo_library_rounded,
+
     Icons.contact_mail_rounded,
-    Icons.person_outline_rounded,
+
+    Icons.person_rounded,
   ];
+
+  // =========================================================
+  // NAVIGATION TITLES
+  // =========================================================
 
   final List<String> titles = [
     "Home",
-    "Services",
+    "About Us",
     "Gallery",
     "Contact Us",
     "Profile",
@@ -42,7 +56,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   void initState() {
     super.initState();
-
     currentIndex = widget.initialIndex;
   }
 
@@ -50,8 +63,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       const HomeScreen(),
-      const ServicesPage(),
+
+      const AboutUsPage(),
+
       const GalleryPage(),
+
       const ContactPage(),
 
       ProfilePage(
@@ -66,12 +82,20 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     return Scaffold(
       backgroundColor: const Color(0xff0B0F14),
 
+      // =======================================================
+      // BODY
+      // =======================================================
+
       body: IndexedStack(
         index: currentIndex,
         children: pages,
       ),
 
       extendBody: true,
+
+      // =======================================================
+      // BOTTOM NAVIGATION BAR
+      // =======================================================
 
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(
@@ -81,31 +105,24 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
-
           child: BackdropFilter(
             filter: ImageFilter.blur(
               sigmaX: 15,
               sigmaY: 15,
             ),
-
             child: Container(
               height: 58,
-
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(.08),
-
                 borderRadius:
                     BorderRadius.circular(24),
-
                 border: Border.all(
                   color: Colors.white12,
                 ),
               ),
-
               child: Row(
                 mainAxisAlignment:
                     MainAxisAlignment.spaceEvenly,
-
                 children: List.generate(
                   icons.length,
                   (index) {
@@ -115,51 +132,44 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                     return InkWell(
                       borderRadius:
                           BorderRadius.circular(18),
-
                       onTap: () {
                         setState(() {
                           currentIndex = index;
                         });
                       },
-
                       child: AnimatedContainer(
                         duration:
                             const Duration(
                           milliseconds: 250,
                         ),
-
                         curve: Curves.easeInOut,
-
                         padding:
                             const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 6,
                         ),
-
-                        decoration:
-                            BoxDecoration(
+                        decoration: BoxDecoration(
                           color: selected
                               ? const Color(
                                   0xff18D4D0,
                                 ).withOpacity(.15)
                               : Colors.transparent,
-
                           borderRadius:
                               BorderRadius.circular(16),
                         ),
-
                         child: Column(
                           mainAxisSize:
                               MainAxisSize.min,
-
                           mainAxisAlignment:
                               MainAxisAlignment.center,
-
                           children: [
+                            // =================================================
+                            // ICON
+                            // =================================================
+
                             Icon(
                               icons[index],
                               size: 21,
-
                               color: selected
                                   ? const Color(
                                       0xff18D4D0,
@@ -167,28 +177,26 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                   : Colors.white54,
                             ),
 
-                            const SizedBox(
-                              height: 3,
-                            ),
+                            const SizedBox(height: 3),
+
+                            // =================================================
+                            // ACTIVE INDICATOR
+                            // =================================================
 
                             AnimatedContainer(
                               duration:
                                   const Duration(
                                 milliseconds: 250,
                               ),
-
                               height: 3,
-
                               width:
                                   selected ? 16 : 0,
-
                               decoration:
                                   BoxDecoration(
                                 color:
                                     const Color(
                                   0xff18D4D0,
                                 ),
-
                                 borderRadius:
                                     BorderRadius.circular(
                                   10,

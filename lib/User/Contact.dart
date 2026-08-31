@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'Chatbox.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -38,6 +38,7 @@ class ContactPage extends StatelessWidget {
       backgroundColor: AppColors.bg,
       appBar: const AlrmanTopBar(
         title: 'CONTACT US',
+        color: AppColors.cyan,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
@@ -63,37 +64,37 @@ class ContactPage extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-           SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ChatPage(),
-        ),
-      );
-    },
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.cyan,
-      padding: const EdgeInsets.symmetric(
-        vertical: 16,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-      ),
-      elevation: 0,
-    ),
-    child: const Text(
-      'Send Message',
-      style: TextStyle(
-        fontSize: 14.5,
-        fontWeight: FontWeight.w800,
-        color: Color(0xFF04222A),
-      ),
-    ),
-  ),
-),
+//            SizedBox(
+//   width: double.infinity,
+//   child: ElevatedButton(
+//     onPressed: () {
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//           builder: (context) => const ChatPage(),
+//         ),
+//       );
+//     },
+//     style: ElevatedButton.styleFrom(
+//       backgroundColor: AppColors.cyan,
+//       padding: const EdgeInsets.symmetric(
+//         vertical: 16,
+//       ),
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(14),
+//       ),
+//       elevation: 0,
+//     ),
+//     child: const Text(
+//       'Send Message',
+//       style: TextStyle(
+//         fontSize: 14.5,
+//         fontWeight: FontWeight.w800,
+//         color: Color(0xFF04222A),
+//       ),
+//     ),
+//   ),
+// ),
               ],
             ),
           ),
@@ -230,7 +231,7 @@ class _ContactFormState extends State<_ContactForm> {
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(
-          color: AppColors.border,
+          color: AppColors.cyan,
         ),
       ),
       focusedBorder: OutlineInputBorder(
@@ -277,7 +278,7 @@ class _ContactFormState extends State<_ContactForm> {
         color: AppColors.panel,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: AppColors.border,
+          color: AppColors.cyan,
         ),
         boxShadow: [
           BoxShadow(
@@ -472,7 +473,7 @@ class _ContactDetailsCard
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.25),
+           color: const Color(0xFF2FD6F0),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -485,7 +486,7 @@ class _ContactDetailsCard
           const Text(
             'Contact Us',
             style: TextStyle(
-              color: AppColors.text,
+              color: Color.fromARGB(255, 255, 255, 255),
               fontSize: 19,
               fontWeight: FontWeight.w800,
             ),
@@ -692,12 +693,12 @@ class _SocialIconsRow
           onTap: openWhatsApp,
         ),
 
-        _SocialCircle(
-          icon: FontAwesomeIcons.youtube,
-          color: const Color(0xFFFF0000),
-          onTap: () =>
-              launchUrlSafely(kYoutubeUrl),
-        ),
+        // _SocialCircle(
+        //   icon: FontAwesomeIcons.youtube,
+        //   color: const Color(0xFFFF0000),
+        //   onTap: () =>
+        //       launchUrlSafely(kYoutubeUrl),
+        // ),
       ],
     );
   }

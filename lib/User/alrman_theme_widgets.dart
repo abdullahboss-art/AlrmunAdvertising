@@ -178,7 +178,7 @@ class AlrmanTopBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBack;
 
-  const AlrmanTopBar({super.key, required this.title, this.onBack});
+  const AlrmanTopBar({super.key, required this.title, this.onBack, required Color color});
 
   @override
   Size get preferredSize => const Size.fromHeight(64);
