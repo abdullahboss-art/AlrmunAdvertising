@@ -178,7 +178,7 @@ class AboutUsPage extends StatelessWidget {
 
               const SizedBox(height: 18),
 
-              _buildServicesCard(context),
+              // _buildServicesCard(context),
 
               const SizedBox(height: 18),
 
@@ -250,7 +250,7 @@ class AboutUsPage extends StatelessWidget {
               color: Colors.black.withOpacity(0.20),
               shape: BoxShape.circle,
               border: Border.all(
-                color: cyan.withOpacity(0.35),
+                color: Colors.blue[400]!,
               ),
             ),
             child: Image.asset(
@@ -326,105 +326,7 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  // =========================================================
-  // SERVICES
-  // =========================================================
-
-  Widget _buildServicesCard(BuildContext context) {
-    return _sectionCard(
-      icon: Icons.design_services_outlined,
-      title: 'What We Do',
-      child: Column(
-        children: services.map((service) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _serviceItem(
-              context: context,
-              icon: _getServiceIcon(service['title']!),
-              title: service['title']!,
-              description: service['description']!,
-              service: service,
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  // =========================================================
-  // SERVICE ICONS
-  // =========================================================
-
-  IconData _getServiceIcon(String title) {
-    switch (title) {
-      case 'Graphic Design':
-        return Icons.palette_outlined;
-
-      case 'Animation & Media':
-        return Icons.movie_creation_outlined;
-
-      case '3D Visualization':
-        return Icons.view_in_ar_outlined;
-
-      case 'Digital & Offset':
-        return Icons.print_outlined;
-
-      case 'Outdoor Advertising':
-        return Icons.campaign_outlined;
-
-      case 'Flex Printing':
-        return Icons.local_print_shop_outlined;
-
-      case 'Vinyl Printing':
-        return Icons.layers_outlined;
-
-      case 'Sign Boards':
-        return Icons.signpost_outlined;
-
-      case '3D Letters':
-        return Icons.text_fields_rounded;
-
-      case 'Business Cards':
-        return Icons.badge_outlined;
-
-      case 'Flyers':
-        return Icons.description_outlined;
-
-      case 'Sticker Printing':
-        return Icons.sticky_note_2_outlined;
-
-      default:
-        return Icons.design_services_outlined;
-    }
-  }
-
-  // =========================================================
-  // MISSION
-  // =========================================================
-
-  // Widget _buildMissionCard() {
-  //   return _sectionCard(
-  //     icon: Icons.flag_outlined,
-  //     title: 'Our Mission',
-  //     child: const Text(
-  //       'Our mission is to help businesses transform their '
-  //       'ideas into memorable brands through creative design, '
-  //       'modern technology and professional advertising '
-  //       'solutions.\n\n'
-  //       'We focus on creating work that is not only beautiful, '
-  //       'but also meaningful and effective for your business.',
-  //       style: TextStyle(
-  //         color: Colors.white70,
-  //         fontSize: 14,
-  //         height: 1.7,
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // =========================================================
-  // WHY CHOOSE ALRMAN
-  // =========================================================
+  
 
   Widget _buildWhyUsCard() {
     return _sectionCard(
@@ -551,97 +453,7 @@ class AboutUsPage extends StatelessWidget {
     );
   }
 
-  // =========================================================
-  // CONTACT / CTA
-  // =========================================================
-
-  // Widget _buildContactCard() {
-  //   return Container(
-  //     width: double.infinity,
-  //     padding: const EdgeInsets.all(20),
-  //     decoration: BoxDecoration(
-  //       gradient: const LinearGradient(
-  //         begin: Alignment.topLeft,
-  //         end: Alignment.bottomRight,
-  //         colors: [
-  //           Color(0xff102B34),
-  //           Color(0xff0D1B24),
-  //         ],
-  //       ),
-  //       borderRadius: BorderRadius.circular(20),
-  //       border: Border.all(
-  //         color: cyan.withOpacity(0.30),
-  //       ),
-  //     ),
-  //     child: Column(
-  //       children: [
-  //         const Icon(
-  //           Icons.rocket_launch_outlined,
-  //           color: cyan,
-  //           size: 34,
-  //         ),
-
-  //         const SizedBox(height: 12),
-
-  //         const Text(
-  //           "Let's Create Something Great",
-  //           textAlign: TextAlign.center,
-  //           style: TextStyle(
-  //             color: Colors.white,
-  //             fontSize: 19,
-  //             fontWeight: FontWeight.bold,
-  //           ),
-  //         ),
-
-  //         const SizedBox(height: 8),
-
-  //         const Text(
-  //           'Have an idea, project or business that needs '
-  //           'a creative touch? Let Alrman Advertising bring '
-  //           'your vision to life.',
-  //           textAlign: TextAlign.center,
-  //           style: TextStyle(
-  //             color: Colors.white60,
-  //             fontSize: 13.5,
-  //             height: 1.6,
-  //           ),
-  //         ),
-
-  //         const SizedBox(height: 18),
-
-  //         Container(
-  //           width: double.infinity,
-  //           padding: const EdgeInsets.symmetric(
-  //             vertical: 13,
-  //             horizontal: 16,
-  //           ),
-  //           decoration: BoxDecoration(
-  //             color: cyan.withOpacity(0.08),
-  //             borderRadius: BorderRadius.circular(14),
-  //             border: Border.all(
-  //               color: cyan.withOpacity(0.25),
-  //             ),
-  //           ),
-  //           child: const Text(
-  //             'Creative Design • Digital Marketing\n'
-  //             'Branding • Printing Solutions',
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(
-  //               color: lightCyan,
-  //               fontSize: 13,
-  //               height: 1.6,
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // =========================================================
-  // COMMON SECTION CARD
-  // =========================================================
+ 
 
   Widget _sectionCard({
     required IconData icon,
@@ -693,114 +505,6 @@ class AboutUsPage extends StatelessWidget {
 
           child,
         ],
-      ),
-    );
-  }
-
-  // =========================================================
-  // CLICKABLE SERVICE ITEM
-  // =========================================================
-
-  Widget _serviceItem({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required String description,
-    required Map<String, String> service,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(13),
-
-        // ===================================================
-        // OPEN CORRECT SERVICE DETAIL
-        // ===================================================
-
-        onTap: () {
-          _openServiceDetail(context, service);
-        },
-
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: field,
-            borderRadius: BorderRadius.circular(13),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.06),
-            ),
-          ),
-          child: Row(
-            children: [
-              // =================================================
-              // ICON
-              // =================================================
-
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: cyan.withOpacity(0.10),
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                child: Icon(
-                  icon,
-                  color: cyan,
-                  size: 21,
-                ),
-              ),
-
-              const SizedBox(width: 12),
-
-              // =================================================
-              // TITLE + DESCRIPTION
-              // =================================================
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-
-                    const SizedBox(height: 3),
-
-                    Text(
-                      description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 11.5,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(width: 8),
-
-              // =================================================
-              // ARROW
-              // =================================================
-
-              const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.white38,
-                size: 15,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

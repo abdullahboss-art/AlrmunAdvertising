@@ -26,15 +26,11 @@ class _GetAQuotePageState extends State<GetAQuotePage> {
   static const Color field = Color(0xff08151D);
   static const Color cyan = Color(0xff2D6A75);
 
-  // =========================================================
-  // WHATSAPP
-  // =========================================================
 
-  static const String whatsappNumber = '923152635232';
 
-  // =========================================================
-  // FORM
-  // =========================================================
+  static const String whatsappNumber = '+97152788516  ';
+
+  
 
   final _formKey = GlobalKey<FormState>();
   final _resultKey = GlobalKey();

@@ -369,7 +369,7 @@
               // ---- Main scrollable form content ----
               Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 20),
+               padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 8),  
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 420),
                     child: Form(
@@ -377,19 +377,21 @@
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 8),
+                         const SizedBox(height: 0),
 
                           // ✅ Logo block — replace with your real logo asset.
   Center(
     child: Column(
       children: [
-        SizedBox(
-          width: 130,
-          height: 130,
+       SizedBox(
+  width: 170,
+  height: 120,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(18),
             child: Image.asset(
               'images/assets/Alrmun_logo.png',
+              height: 120,
+              width: 120,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(
@@ -404,19 +406,11 @@
 
         const SizedBox(height: 12),
 
-        // const Text(
-        //   "ALRAMN",
-        //   style: TextStyle(
-        //     color: Colors.white,
-        //     fontSize: 18,
-        //     fontWeight: FontWeight.bold,
-        //     letterSpacing: 3,
-        //   ),
-        // ),
+       
       ],
     ),
   ),
-  const SizedBox(height: 24),
+const SizedBox(height: 10),
                           const Text(
                             "Welcome Back!",
                             style: TextStyle(
@@ -425,7 +419,7 @@
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                           const Text(
                             "Login to continue",
                             style: TextStyle(
@@ -555,11 +549,12 @@
                                     ),
                             ),
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 10),
                         
+const SizedBox(height: 15),
 
-                          const SizedBox(height: 28),
 
+                          
                           Row(
                             children: [
                               const Expanded(child: Divider(color: Colors.white12)),
@@ -572,10 +567,10 @@
                               const Expanded(child: Divider(color: Colors.white12)),
                             ],
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 12),
 
                         
-                        const SizedBox(height: 16),
+                       
 
   SizedBox(
     width: double.infinity,
@@ -640,12 +635,10 @@
     ),
   ),
 
-  const SizedBox(height: 22),
+  const SizedBox(height: 8),
 
-                          const SizedBox(height: 32),
-
-                          Center(
-                            child: TextButton(
+Center(
+  child: TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -677,7 +670,7 @@
                               ),
                             ),
                           ),
-                          const SizedBox(height: 20),
+                        const SizedBox(height: 5),
                         ],
                       ),
                     ),

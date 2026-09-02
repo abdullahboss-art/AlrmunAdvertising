@@ -1,793 +1,1080 @@
+import 'package:adverting_app/User/Contacthelp.dart';
+import 'package:adverting_app/User/Home.dart';
+import 'package:adverting_app/User/contactwiget.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'alrman_theme_widgets.dart';
-
-// =========================================================================
-// CONFIG
-// =========================================================================
-
-const String kWebsiteUrl = 'https://www.alrmanadvertising.com';
-const String kOfficeAddress = 'Dubai, United Arab Emirates';
-
-const String kFacebookUrl =
-    'https://facebook.com/alrmanadvertising';
-
-const String kInstagramUrl =
-    'https://instagram.com/alrmanadvertising';
-
-const String kLinkedInUrl =
-    'https://linkedin.com/company/alrmanadvertising';
-
-const String kYoutubeUrl =
-    'https://youtube.com/@alrmanadvertising';
-
-// =========================================================================
-// PAGE — CONTACT US
-// =========================================================================
-
-class ContactPage extends StatelessWidget {
+class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
+
+  @override
+  State<ContactPage> createState() => _ContactPageState();
+}
+
+class _ContactPageState extends State<ContactPage> {
+  // =========================================================
+  // COLORS
+  // =========================================================
+
+  static const Color background = Color(0xFF0B0F19);
+  static const Color card = Color(0xFF171B24);
+  static const Color gold = Color(0xFF36B6BD);
+
+  // =========================================================
+  // FORM CONTROLLERS
+  // =========================================================
+
+  final TextEditingController nameController =
+      TextEditingController();
+
+  final TextEditingController emailController =
+      TextEditingController();
+
+  final TextEditingController phoneController =
+      TextEditingController();
+
+  final TextEditingController subjectController =
+      TextEditingController();
+
+  final TextEditingController messageController =
+      TextEditingController();
+
+  // =========================================================
+  // FORM STATES
+  // =========================================================
+
+  bool isSending = false;
+  bool isSubmitted = false;
+
+  // =========================================================
+  // VALIDATION ERRORS
+  // =========================================================
+
+  String? nameError;
+  String? emailError;
+  String? phoneError;
+  String? subjectError;
+  String? messageError;
+
+  // =========================================================
+  // DISPOSE
+  // =========================================================
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    subjectController.dispose();
+    messageController.dispose();
+
+    super.dispose();
+  }
+
+  // =========================================================
+  // SUBMIT FORM
+  // =========================================================
+
+  Future<void> submitForm() async {
+    // Clear old errors
+    setState(() {
+      nameError = null;
+      emailError = null;
+      phoneError = null;
+      subjectError = null;
+      messageError = null;
+      isSubmitted = false;
+    });
+
+    final String name = nameController.text.trim();
+    final String email = emailController.text.trim();
+    final String phone = phoneController.text.trim();
+    final String subject = subjectController.text.trim();
+    final String message = messageController.text.trim();
+
+    bool hasError = false;
+
+    // =========================================================
+    // NAME VALIDATION
+    // =========================================================
+
+    if (name.isEmpty) {
+      nameError = 'Please enter your name.';
+      hasError = true;
+    } else if (name.length < 3) {
+      nameError =
+          'Name must be at least 3 characters.';
+      hasError = true;
+    } else if (RegExp(r'[0-9]').hasMatch(name)) {
+      nameError =
+          'Name should contain letters only.';
+      hasError = true;
+    }
+
+    // =========================================================
+    // EMAIL VALIDATION
+    // =========================================================
+
+    if (email.isEmpty) {
+      emailError = 'Please enter your email.';
+      hasError = true;
+    } else if (!RegExp(
+      r'^[\w\.-]+@[\w\.-]+\.\w+$',
+    ).hasMatch(email)) {
+      emailError =
+          'Please enter a valid email address.';
+      hasError = true;
+    }
+
+    // =========================================================
+    // PHONE VALIDATION
+    // =========================================================
+
+    if (phone.isEmpty) {
+      phoneError =
+          'Please enter your phone number.';
+      hasError = true;
+    } else {
+      final String phoneDigits =
+          phone.replaceAll(RegExp(r'[^0-9]'), '');
+
+      if (phoneDigits.length < 7) {
+        phoneError =
+            'Please enter a valid phone number.';
+        hasError = true;
+      } else if (phoneDigits.length > 15) {
+        phoneError =
+            'Phone number is too long.';
+        hasError = true;
+      }
+    }
+
+    // =========================================================
+    // SUBJECT VALIDATION
+    // =========================================================
+
+    if (subject.isEmpty) {
+      subjectError = 'Please enter a subject.';
+      hasError = true;
+    } else if (subject.length < 3) {
+      subjectError =
+          'Subject must be at least 3 characters.';
+      hasError = true;
+    }
+
+    // =========================================================
+    // MESSAGE VALIDATION
+    // =========================================================
+
+    if (message.isEmpty) {
+      messageError =
+          'Please enter your message.';
+      hasError = true;
+    } else if (message.length < 10) {
+      messageError =
+          'Message must be at least 10 characters.';
+      hasError = true;
+    }
+
+    // Update validation errors
+    setState(() {});
+
+    // Stop if validation failed
+    if (hasError) {
+      return;
+    }
+
+    // =========================================================
+    // START SENDING
+    // =========================================================
+
+    setState(() {
+      isSending = true;
+    });
+
+    try {
+      // =======================================================
+      // SAVE TO FIRESTORE
+      // =======================================================
+
+      await FirebaseFirestore.instance
+          .collection('contact_messages')
+          .add({
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'subject': subject,
+        'message': message,
+        'status': 'new',
+        'createdAt':
+            FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+
+      // =======================================================
+      // CLEAR FORM
+      // =======================================================
+
+      nameController.clear();
+      emailController.clear();
+      phoneController.clear();
+      subjectController.clear();
+      messageController.clear();
+
+      // =======================================================
+      // SUCCESS
+      // =======================================================
+
+      setState(() {
+        isSending = false;
+        isSubmitted = true;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Message submitted successfully!',
+          ),
+          behavior:
+              SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        isSending = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Failed to submit message. Please try again.',
+          ),
+          behavior:
+              SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  // =========================================================
+  // BUILD
+  // =========================================================
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
-      appBar: const AlrmanTopBar(
-        title: 'CONTACT US',
-        color: AppColors.cyan,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(
-          20,
-          26,
-          20,
-          30,
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 480,
+      backgroundColor: background,
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics:
+              const BouncingScrollPhysics(),
+
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              16,
+              12,
+              16,
+              30,
             ),
+
             child: Column(
               crossAxisAlignment:
-                  CrossAxisAlignment.stretch,
+                  CrossAxisAlignment.start,
+
               children: [
-                const _ContactDetailsCard(),
 
-                const SizedBox(height: 20),
+                // =====================================================
+                // TOP BAR
+                // =====================================================
 
-                // const _ContactForm(),
+              Row(
+  children: [
 
-                const SizedBox(height: 20),
+    Container(
+      width: 46,
+      height: 46,
 
-//            SizedBox(
-//   width: double.infinity,
-//   child: ElevatedButton(
-//     onPressed: () {
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => const ChatPage(),
-//         ),
-//       );
-//     },
-//     style: ElevatedButton.styleFrom(
-//       backgroundColor: AppColors.cyan,
-//       padding: const EdgeInsets.symmetric(
-//         vertical: 16,
-//       ),
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(14),
-//       ),
-//       elevation: 0,
-//     ),
-//     child: const Text(
-//       'Send Message',
-//       style: TextStyle(
-//         fontSize: 14.5,
-//         fontWeight: FontWeight.w800,
-//         color: Color(0xFF04222A),
-//       ),
-//     ),
-//   ),
-// ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// =========================================================================
-// CONTACT FORM
-// =========================================================================
-
-class _ContactForm extends StatefulWidget {
-  const _ContactForm();
-
-  @override
-  State<_ContactForm> createState() =>
-      _ContactFormState();
-}
-
-class _ContactFormState extends State<_ContactForm> {
-  final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _nameController =
-      TextEditingController();
-
-  final TextEditingController _emailController =
-      TextEditingController();
-
-  final TextEditingController _messageController =
-      TextEditingController();
-
-  bool _isSending = false;
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _messageController.dispose();
-    super.dispose();
-  }
-
-  // =========================================================================
-  // SUBMIT FORM
-  // =========================================================================
-
-  Future<void> _submitForm() async {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
-
-  setState(() {
-    _isSending = true;
-  });
-
-  final String name = _nameController.text.trim();
-  final String email = _emailController.text.trim();
-  final String message = _messageController.text.trim();
-
-  try {
-    await FirebaseFirestore.instance
-        .collection('contact_messages')
-        .add({
-      'name': name,
-      'email': email,
-      'message': message,
-      'status': 'new',
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-
-    if (!mounted) return;
-
-    setState(() {
-      _isSending = false;
-    });
-
-    _nameController.clear();
-    _emailController.clear();
-    _messageController.clear();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Message submitted successfully!',
-        ),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  } catch (e) {
-    if (!mounted) return;
-
-    setState(() {
-      _isSending = false;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Failed to submit message: $e',
-        ),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-}
-  // =========================================================================
-  // INPUT DECORATION
-  // =========================================================================
-
-  InputDecoration _inputDecoration({
-    required String hint,
-    required IconData icon,
-  }) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(
-        color: AppColors.textDim,
-        fontSize: 13,
-      ),
-      prefixIcon: Icon(
-        icon,
-        color: AppColors.cyan,
-        size: 19,
-      ),
-      filled: true,
-      fillColor: AppColors.bg,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: AppColors.border,
-        ),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(
-          color: AppColors.cyan,
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: AppColors.cyan,
-          width: 1.3,
-        ),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: Colors.redAccent,
-        ),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: Colors.redAccent,
-          width: 1.3,
-        ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 15,
-      ),
-    );
-  }
-
-  // =========================================================================
-  // FORM UI
-  // =========================================================================
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        22,
-        24,
-        22,
-        26,
-      ),
       decoration: BoxDecoration(
-        color: AppColors.panel,
-        borderRadius: BorderRadius.circular(18),
+        color: const Color(0xFF141922),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: AppColors.cyan,
+          color: Colors.white.withOpacity(0.08),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
       ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Send Us a Message',
-              style: TextStyle(
-                color: AppColors.text,
-                fontSize: 19,
-                fontWeight: FontWeight.w800,
-              ),
+
+      child: IconButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
             ),
+          );
+        },
 
-            const SizedBox(height: 5),
+        icon: const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: gold,
+          size: 19,
+        ),
+      ),
+    ),
 
-            const Text(
-              'Fill out the form and we will get back to you.',
-              style: TextStyle(
-                color: AppColors.textDim,
-                fontSize: 12.5,
-              ),
-            ),
+    const Spacer(),
 
-            const SizedBox(height: 22),
+    Image.asset(
+      'images/assets/Alrmun_logo.png',
+      width: 112,
+      height: 70,
+      fit: BoxFit.contain,
+    ),
 
-            // NAME
-            TextFormField(
-              controller: _nameController,
-              style: const TextStyle(
-                color: AppColors.text,
-                fontSize: 13.5,
-              ),
-              decoration: _inputDecoration(
-                hint: 'Enter your name',
-                icon: Icons.person_outline_rounded,
-              ),
-              validator: (value) {
-                if (value == null ||
-                    value.trim().isEmpty) {
-                  return 'Please enter your name';
-                }
-                return null;
-              },
-            ),
+    const Spacer(),
 
-            const SizedBox(height: 15),
+    const SizedBox(
+      width: 46,
+    ),
+  ],
+),
 
-            // EMAIL
-            TextFormField(
-              controller: _emailController,
-              keyboardType:
-                  TextInputType.emailAddress,
-              style: const TextStyle(
-                color: AppColors.text,
-                fontSize: 13.5,
-              ),
-              decoration: _inputDecoration(
-                hint: 'Enter your email',
-                icon: Icons.email_outlined,
-              ),
-              validator: (value) {
-                if (value == null ||
-                    value.trim().isEmpty) {
-                  return 'Please enter your email';
-                }
+const SizedBox(height: 24),
 
-                final emailRegex = RegExp(
-                  r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                );
+// HEADER
+                Row(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
 
-                if (!emailRegex.hasMatch(
-                  value.trim(),
-                )) {
-                  return 'Please enter a valid email';
-                }
+                  children: [
 
-                return null;
-              },
-            ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
 
-            const SizedBox(height: 15),
+                        children: [
 
-            // MESSAGE
-            TextFormField(
-              controller: _messageController,
-              maxLines: 5,
-              style: const TextStyle(
-                color: AppColors.text,
-                fontSize: 13.5,
-              ),
-              decoration: _inputDecoration(
-                hint: 'Write your message...',
-                icon: Icons.message_outlined,
-              ),
-              validator: (value) {
-                if (value == null ||
-                    value.trim().isEmpty) {
-                  return 'Please enter your message';
-                }
+                          RichText(
+                            text:
+                                const TextSpan(
+                              children: [
 
-                return null;
-              },
-            ),
+                                TextSpan(
+                                  text:
+                                      'CONTACT ',
+                                  style:
+                                      TextStyle(
+                                    color:
+                                        Colors.white,
+                                    fontSize: 34,
+                                    fontWeight:
+                                        FontWeight.w900,
+                                    letterSpacing:
+                                        -1,
+                                  ),
+                                ),
 
-            const SizedBox(height: 20),
+                                TextSpan(
+                                  text: 'US',
+                                  style:
+                                      TextStyle(
+                                    color: gold,
+                                    fontSize: 34,
+                                    fontWeight:
+                                        FontWeight.w900,
+                                    letterSpacing:
+                                        -1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
 
-            // SUBMIT BUTTON
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed:
-                    _isSending
-                        ? null
-                        : _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      AppColors.cyan,
-                  foregroundColor:
-                      const Color(0xFF04222A),
-                  padding:
-                      const EdgeInsets.symmetric(
-                    vertical: 16,
-                  ),
-                  shape:
-                      RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(14),
-                  ),
-                  elevation: 0,
-                ),
-                child: _isSending
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child:
-                            CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color:
-                              Color(0xFF04222A),
-                        ),
-                      )
-                    : const Text(
-                        'Submit Message',
-                        style: TextStyle(
-                          fontSize: 14.5,
-                          fontWeight:
-                              FontWeight.w800,
-                        ),
+                          const SizedBox(
+                              height: 10),
+
+                          Container(
+                            width: 78,
+                            height: 3,
+
+                            decoration:
+                                BoxDecoration(
+                              color: gold,
+                              borderRadius:
+                                  BorderRadius
+                                      .circular(
+                                          10),
+                            ),
+                          ),
+
+                          const SizedBox(
+                              height: 14),
+
+                          const Text(
+                            "We're here to help and answer any\n"
+                            "questions you may have.",
+
+                            style: TextStyle(
+                              color:
+                                  Colors.white60,
+                              fontSize: 14,
+                              height: 1.55,
+                            ),
+                          ),
+                        ],
                       ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+                    ),
 
-// =========================================================================
-// CONTACT DETAILS + SOCIAL ICONS CARD
-// =========================================================================
+                    Container(
+                      width: 48,
+                      height: 48,
 
-class _ContactDetailsCard
-    extends StatelessWidget {
-  const _ContactDetailsCard();
+                      decoration:
+                          BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(
+                                14),
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        22,
-        24,
-        22,
-        26,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.panel,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: AppColors.border,
-        ),
-        boxShadow: [
-          BoxShadow(
-           color: const Color(0xFF2FD6F0),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Contact Us',
-            style: TextStyle(
-              color: Color.fromARGB(255, 255, 255, 255),
-              fontSize: 19,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+                        border: Border.all(
+                          color:
+                              gold.withOpacity(
+                                  0.45),
+                        ),
 
-          const SizedBox(height: 4),
+                        color:
+                            const Color(
+                                0xFF141922),
+                      ),
 
-          const Text(
-            'We are here to help you',
-            style: TextStyle(
-              color: AppColors.textDim,
-              fontSize: 12.5,
-            ),
-          ),
+                      child: const Icon(
+                        Icons
+                            .headset_mic_rounded,
+                        color: gold,
+                        size: 25,
+                      ),
+                    ),
+                  ],
+                ),
 
-          const SizedBox(height: 22),
+                const SizedBox(height: 25),
 
-          _DetailRow(
-            icon: Icons.call_rounded,
-            iconColor: AppColors.call,
-            title: kPhoneNumber,
-            subtitle: 'Call us anytime',
-            onTap: callNow,
-          ),
+                // =====================================================
+                // CONTACT CARDS
+                // =====================================================
 
-          const SizedBox(height: 16),
+                Row(
+                  children: [
 
-          _DetailRow(
-            icon: Icons.email_rounded,
-            iconColor: AppColors.email,
-            title: kEmailAddress,
-            subtitle: 'Drop us an email',
-            onTap: sendEmail,
-          ),
+                    Expanded(
+                      child:
+                          ContactWidgets
+                              .contactCard(
+                        icon:
+                            Icons.phone_rounded,
+                        title: 'CALL US',
+                        value:
+                            ContactHelpers
+                                .phone,
+                        iconColor: gold,
+                        onTap:
+                            ContactHelpers
+                                .callUs,
+                      ),
+                    ),
 
-          const SizedBox(height: 16),
+                    const SizedBox(width: 8),
 
-          _DetailRow(
-            icon: Icons.language_rounded,
-            iconColor: AppColors.cyan,
-            title: kWebsiteUrl.replaceFirst(
-              'https://',
-              '',
-            ),
-            subtitle: 'Visit our website',
-            onTap: () =>
-                launchUrlSafely(kWebsiteUrl),
-          ),
+                    Expanded(
+                      child:
+                          ContactWidgets
+                              .contactCard(
+                        icon:
+                            Icons.email_rounded,
+                        title: 'EMAIL US',
+                        value:
+                            ContactHelpers
+                                .email,
+                        iconColor: gold,
+                        onTap:
+                            ContactHelpers
+                                .emailUs,
+                      ),
+                    ),
+                  ],
+                ),
 
-          const SizedBox(height: 16),
+                const SizedBox(height: 8),
 
-          _DetailRow(
-            icon: Icons.location_on_rounded,
-            iconColor: AppColors.gold,
-            title: kOfficeAddress,
-            subtitle: 'Our office location',
-            onTap: () => launchUrlSafely(
-              'https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(kOfficeAddress)}',
-            ),
-          ),
+                // =====================================================
+                // LOCATION + WEBSITE
+                // =====================================================
 
-          const SizedBox(height: 28),
+                Row(
+                  children: [
 
-          const Center(
-            child: Text(
-              'Follow Us',
-              style: TextStyle(
-                color: AppColors.text,
-                fontSize: 13.5,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
+                    Expanded(
+                      child:
+                          ContactWidgets
+                              .contactCard(
+                        icon: Icons
+                            .location_on_rounded,
+                        title: 'LOCATION',
+                        value:
+                            'Dubai, UAE',
+                        iconColor: gold,
+                        onTap:
+                            ContactHelpers
+                                .openLocation,
+                      ),
+                    ),
 
-          const SizedBox(height: 14),
+                    const SizedBox(width: 8),
 
-          const _SocialIconsRow(),
-        ],
-      ),
-    );
-  }
-}
+                    Expanded(
+                      child:
+                          ContactWidgets
+                              .contactCard(
+                        icon: Icons
+                            .language_rounded,
+                        title: 'WEBSITE',
+                        value:
+                            'alrmanadvertising.com',
+                        iconColor: gold,
+                        onTap:
+                            ContactHelpers
+                                .openWebsite,
+                      ),
+                    ),
+                  ],
+                ),
 
-// =========================================================================
-// DETAIL ROW
-// =========================================================================
+                const SizedBox(height: 12),
 
-class _DetailRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+                // =====================================================
+                // SEND MESSAGE CARD
+                // =====================================================
 
-  const _DetailRow({
-    required this.icon,
-    required this.iconColor,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
+                Container(
+                  width: double.infinity,
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 4,
-        ),
-        child: Row(
-          crossAxisAlignment:
-              CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: iconColor.withOpacity(0.14),
-              ),
-              child: Icon(
-                icon,
-                color: iconColor,
-                size: 19,
-              ),
-            ),
+                  padding:
+                      const EdgeInsets.fromLTRB(
+                    18,
+                    20,
+                    18,
+                    18,
+                  ),
 
-            const SizedBox(width: 14),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: AppColors.text,
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w700,
+                  decoration:
+                      BoxDecoration(
+                    color: card,
+                    borderRadius:
+                        BorderRadius.circular(
+                            18),
+                    border: Border.all(
+                      color: Colors.white
+                          .withOpacity(0.08),
                     ),
                   ),
 
-                  const SizedBox(height: 2),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
 
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      color: AppColors.textDim,
-                      fontSize: 11.5,
+                    children: [
+
+                      RichText(
+                        text:
+                            const TextSpan(
+                          children: [
+
+                            TextSpan(
+                              text:
+                                  'SEND US A ',
+                              style:
+                                  TextStyle(
+                                color:
+                                    Colors.white,
+                                fontSize: 16,
+                                fontWeight:
+                                    FontWeight
+                                        .w800,
+                              ),
+                            ),
+
+                            TextSpan(
+                              text: 'MESSAGE',
+                              style:
+                                  TextStyle(
+                                color: gold,
+                                fontSize: 16,
+                                fontWeight:
+                                    FontWeight
+                                        .w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Container(
+                        width: 30,
+                        height: 2,
+                        color: gold,
+                      ),
+
+                      const SizedBox(
+                          height: 17),
+
+                      // =================================================
+                      // NAME + EMAIL
+                      // =================================================
+
+                      Row(
+                        crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+
+                        children: [
+
+                          Expanded(
+                            child:
+                                ContactWidgets
+                                    .inputField(
+                              controller:
+                                  nameController,
+                              hint: 'Your Name',
+                              icon: Icons
+                                  .person_outline_rounded,
+                              errorText:
+                                  nameError,
+                            ),
+                          ),
+
+                          const SizedBox(
+                              width: 8),
+
+                          Expanded(
+                            child:
+                                ContactWidgets
+                                    .inputField(
+                              controller:
+                                  emailController,
+                              hint: 'Your Email',
+                              icon: Icons
+                                  .email_outlined,
+                              keyboardType:
+                                  TextInputType
+                                      .emailAddress,
+                              errorText:
+                                  emailError,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // =================================================
+                      // PHONE
+                      // =================================================
+
+                      ContactWidgets.inputField(
+                        controller:
+                            phoneController,
+                        hint: 'Phone Number',
+                        icon:
+                            Icons.phone_outlined,
+                        keyboardType:
+                            TextInputType.phone,
+                        errorText: phoneError,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // =================================================
+                      // SUBJECT
+                      // =================================================
+
+                      ContactWidgets.inputField(
+                        controller:
+                            subjectController,
+                        hint: 'Subject',
+                        icon:
+                            Icons.subject_rounded,
+                        errorText:
+                            subjectError,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // =================================================
+                      // MESSAGE
+                      // =================================================
+
+                      ContactWidgets.inputField(
+                        controller:
+                            messageController,
+                        hint: 'Your Message',
+                        icon:
+                            Icons.edit_outlined,
+                        maxLines: 4,
+                        errorText:
+                            messageError,
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      // =================================================
+                      // SEND BUTTON
+                      // =================================================
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+
+                        child:
+                            ElevatedButton.icon(
+                          onPressed:
+                              isSending
+                                  ? null
+                                  : submitForm,
+
+                          icon: isSending
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child:
+                                      CircularProgressIndicator(
+                                    strokeWidth:
+                                        2,
+                                    color:
+                                        Colors.black,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons
+                                      .send_rounded,
+                                  color:
+                                      Colors.black,
+                                  size: 19,
+                                ),
+
+                          label: Text(
+                            isSending
+                                ? 'SENDING...'
+                                : 'SEND MESSAGE',
+
+                            style:
+                                const TextStyle(
+                              color:
+                                  Colors.black,
+                              fontSize: 13,
+                              fontWeight:
+                                  FontWeight.w800,
+                            ),
+                          ),
+
+                          style:
+                              ElevatedButton
+                                  .styleFrom(
+                            backgroundColor:
+                                gold,
+
+                            disabledBackgroundColor:
+                                gold,
+
+                            elevation: 0,
+
+                            shape:
+                                RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius
+                                      .circular(
+                                          12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // =====================================================
+                // THANK YOU MESSAGE
+                // =====================================================
+
+                if (isSubmitted) ...[
+                  const SizedBox(height: 12),
+
+                  Container(
+                    width: double.infinity,
+
+                    padding:
+                        const EdgeInsets.all(15),
+
+                    decoration:
+                        BoxDecoration(
+                      color:
+                          const Color(
+                              0xFF102A2D),
+
+                      borderRadius:
+                          BorderRadius.circular(
+                              16),
+
+                      border: Border.all(
+                        color:
+                            gold.withOpacity(
+                                0.35),
+                      ),
+                    ),
+
+                    child: Row(
+                      children: [
+
+                        Container(
+                          width: 42,
+                          height: 42,
+
+                          decoration:
+                              BoxDecoration(
+                            shape:
+                                BoxShape.circle,
+                            color:
+                                gold.withOpacity(
+                                    0.15),
+                          ),
+
+                          child: const Icon(
+                            Icons.check_rounded,
+                            color: gold,
+                            size: 25,
+                          ),
+                        ),
+
+                        const SizedBox(
+                            width: 12),
+
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+
+                            children: [
+
+                              Text(
+                                'Thank You for Your Message!',
+                                style:
+                                    TextStyle(
+                                  color:
+                                      Colors.white,
+                                  fontSize: 14,
+                                  fontWeight:
+                                      FontWeight
+                                          .w800,
+                                ),
+                              ),
+
+                              SizedBox(height: 4),
+
+                              Text(
+                                'Your message has been received successfully. '
+                                'Our team will get back to you soon.',
+                                style:
+                                    TextStyle(
+                                  color:
+                                      Colors.white60,
+                                  fontSize: 12,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
-              ),
+
+                const SizedBox(height: 12),
+
+                // =====================================================
+                // FEEDBACK CARD
+                // =====================================================
+
+                Container(
+                  width: double.infinity,
+
+                  padding:
+                      const EdgeInsets.all(16),
+
+                  decoration:
+                      BoxDecoration(
+                    color: card,
+
+                    borderRadius:
+                        BorderRadius.circular(
+                            17),
+
+                    border: Border.all(
+                      color: Colors.white
+                          .withOpacity(0.08),
+                    ),
+                  ),
+
+                  child: Row(
+                    children: [
+
+                      Container(
+                        width: 48,
+                        height: 48,
+
+                        decoration:
+                            BoxDecoration(
+                          shape:
+                              BoxShape.circle,
+
+                          border:
+                              Border.all(
+                            color:
+                                gold.withOpacity(
+                                    0.6),
+                          ),
+                        ),
+
+                        child: const Icon(
+                          Icons
+                              .verified_rounded,
+                          color: gold,
+                          size: 27,
+                        ),
+                      ),
+
+                      const SizedBox(
+                          width: 14),
+
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment
+                                  .start,
+
+                          children: [
+
+                            Text(
+                              'We value your feedback!',
+                              style:
+                                  TextStyle(
+                                color:
+                                    Colors.white,
+                                fontSize: 14,
+                                fontWeight:
+                                    FontWeight
+                                        .w800,
+                              ),
+                            ),
+
+                            SizedBox(height: 4),
+
+                            Text(
+                              'Our team will get back to you\n'
+                              'as soon as possible.',
+                              style:
+                                  TextStyle(
+                                color:
+                                    Colors.white54,
+                                fontSize: 12,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+
+                // =====================================================
+                // FOLLOW US
+                // =====================================================
+
+                const Center(
+                  child: Text(
+                    'FOLLOW US',
+
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight:
+                          FontWeight.w800,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // =====================================================
+                // SOCIAL ICONS
+                // =====================================================
+
+                Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.center,
+
+                  children: [
+
+                    ContactWidgets
+                        .socialImageButton(
+                      'images/assets/Whatsepp.png',
+                      const Color(0xFF25D366),
+                      ContactHelpers
+                          .openWhatsApp,
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    ContactWidgets
+                        .socialImageButton(
+                      'images/assets/Instagram.png',
+                      const Color(0xFFE1306C),
+                      ContactHelpers
+                          .openInstagram,
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    ContactWidgets
+                        .socialImageButton(
+                      'images/assets/Linkdin.png',
+                      const Color(0xFF0A66C2),
+                      ContactHelpers
+                          .openLinkedIn,
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    ContactWidgets
+                        .socialImageButton(
+                      'images/assets/Facebook.png',
+                      const Color(0xFF1877F2),
+                      ContactHelpers
+                          .openFacebook,
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// =========================================================================
-// SOCIAL ICONS ROW
-// =========================================================================
-
-class _SocialIconsRow
-    extends StatelessWidget {
-  const _SocialIconsRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 12,
-      runSpacing: 10,
-      children: [
-        _SocialCircle(
-          icon: FontAwesomeIcons.facebookF,
-          color: const Color(0xFF1877F2),
-          onTap: () =>
-              launchUrlSafely(kFacebookUrl),
-        ),
-
-        _SocialCircle(
-          icon: FontAwesomeIcons.instagram,
-          color: const Color(0xFFE1306C),
-          onTap: () =>
-              launchUrlSafely(kInstagramUrl),
-        ),
-
-        _SocialCircle(
-          icon: FontAwesomeIcons.linkedinIn,
-          color: const Color(0xFF0A66C2),
-          onTap: () =>
-              launchUrlSafely(kLinkedInUrl),
-        ),
-
-        _SocialCircle(
-          icon: FontAwesomeIcons.whatsapp,
-          color: AppColors.whatsapp,
-          onTap: openWhatsApp,
-        ),
-
-        // _SocialCircle(
-        //   icon: FontAwesomeIcons.youtube,
-        //   color: const Color(0xFFFF0000),
-        //   onTap: () =>
-        //       launchUrlSafely(kYoutubeUrl),
-        // ),
-      ],
-    );
-  }
-}
-
-// =========================================================================
-// SOCIAL CIRCLE
-// =========================================================================
-
-class _SocialCircle
-    extends StatelessWidget {
-  final FaIconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _SocialCircle({
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        width: 40,
-        height: 40,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.35),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: FaIcon(
-          icon,
-          color: Colors.white,
-          size: 17,
-        ),
-      ),
-    );
-  }
-}
-
-// =========================================================================
-// SEND MESSAGE BUTTON
-// =========================================================================
-
-class _StartChatButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _StartChatButton({
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: onTap,
-        icon: const Icon(
-          Icons.chat_bubble_outline_rounded,
-          size: 20,
-        ),
-        label: const Text(
-          'Start a Conversation',
-          style: TextStyle(
-            fontSize: 14.5,
-            fontWeight: FontWeight.w800,
           ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.cyan,
-          foregroundColor: const Color(0xFF04222A),
-          padding: const EdgeInsets.symmetric(
-            vertical: 16,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          elevation: 0,
         ),
       ),
     );

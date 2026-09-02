@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
-import 'Service.dart';
-import 'project_detail_page.dart';
+
+
 import 'gallery_data.dart';
 import 'full_screen_image_page.dart';
 
@@ -16,7 +16,7 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
-  static const bg = Color(0xFF0D0D0D);
+  static const bg = Color(0xFF0B0F19);
   static const card = Color(0xFF171717);
   static const accent = Color(0xFF2FBEA6);
 
@@ -111,7 +111,7 @@ class _GalleryPageState extends State<GalleryPage> {
               _backButton(),
               const SizedBox(width: 14),
               const Text(
-                "Gallery",
+                "Portofio",
                 style: TextStyle(
                   color: Color(0xFF2BC3DC),
                   fontSize: 27,

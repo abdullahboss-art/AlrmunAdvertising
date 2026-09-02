@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class EstimateColors {
-  static const Color background = Color(0xFF07131B);
+  static const Color background = Color(0xFF0B0F19);
   static const Color cardColor = Color(0xFF0D1B24);
   static const Color fieldColor = Color(0xFF111F28);
   static const Color borderColor = Color(0xFF23333D);
   static const Color accent = Color(0xFF16C8D8);
 }
 
-const String whatsappNumber = '923152635232';
+const String whatsappNumber = '+97152788516';
 
 final List<Map<String, dynamic>> advertisingCategories = [
   {

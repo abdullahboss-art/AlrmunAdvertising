@@ -29,18 +29,12 @@ class _CustomBottomNavBarState
   // =========================================================
 
   final List<IconData> icons = [
-    Icons.home_rounded,
-
-    // ABOUT US
-    Icons.business_rounded,
-
-    Icons.photo_library_rounded,
-
-    Icons.contact_mail_rounded,
-
-    Icons.person_rounded,
-  ];
-
+  Icons.home_rounded,
+  Icons.info_outline_rounded, // About Us
+  Icons.photo_library_rounded,
+  Icons.contact_mail_rounded,
+  Icons.person_rounded,
+];
   // =========================================================
   // NAVIGATION TITLES
   // =========================================================

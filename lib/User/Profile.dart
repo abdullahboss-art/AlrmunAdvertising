@@ -3,6 +3,7 @@ import 'package:adverting_app/User/Login.dart';
 import 'package:adverting_app/User/Setting.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:adverting_app/User/Estimated.dart'; 
 
 class ProfilePage extends StatelessWidget {
   final ValueChanged<int>? onTabChange;
@@ -141,6 +142,18 @@ class ProfilePage extends StatelessWidget {
                   onTabChange?.call(2);
                 },
               ),
+              _ProfileTile(
+  icon: Icons.calculate_outlined,
+  title: "Estimated",
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AdvertisingEstimatePage(),
+      ),
+    );
+  },
+),
 
               // =====================================================
               // SETTINGS
@@ -158,6 +171,7 @@ class ProfilePage extends StatelessWidget {
                   );
                 },
               ),
+
 
               // =====================================================
               // ABOUT US

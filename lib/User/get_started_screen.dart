@@ -429,8 +429,8 @@ class _GetStartedScreenState extends State<GetStartedScreen>
           // ------------------------------------------------------
 
           Container(
-            width: 100,
-            height: 100,
+            width: 160,
+            height: 160,
             padding: const EdgeInsets.all(4),
 
 
@@ -784,99 +784,88 @@ class _GetStartedScreenState extends State<GetStartedScreen>
   // GET STARTED BUTTON
   // ============================================================
 
-  Widget _buildGetStartedButton() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        18,
-        4,
-        18,
-        0,
-      ),
+ Widget _buildGetStartedButton() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(
+      18,
+      4,
+      18,
+      0,
+    ),
+    child: SizedBox(
+      width: double.infinity,
+      height: 57,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(17),
 
-      child: SizedBox(
-        width: double.infinity,
-        height: 57,
-
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.circular(17),
-
-            gradient:
-                const LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                accent,
-                accentLight,
-              ],
-            ),
-
-            boxShadow: [
-              BoxShadow(
-                color:
-                    accent.withOpacity(0.35),
-
-                blurRadius: 20,
-
-                offset:
-                    const Offset(0, 8),
-              ),
+          gradient: const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              accent,
+              accentLight,
             ],
           ),
 
-          child: ElevatedButton(
-            onPressed: _handleGetStarted,
-
-            style:
-                ElevatedButton.styleFrom(
-              backgroundColor:
-                  Colors.transparent,
-
-              foregroundColor:
-                  Colors.white,
-
-              shadowColor:
-                  Colors.transparent,
-
-              elevation: 0,
-
-              shape:
-                  RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(17),
-              ),
+          boxShadow: [
+            BoxShadow(
+              color: accent.withOpacity(0.35),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
+          ],
+        ),
 
-            child: const Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
+        child: ElevatedButton(
+          onPressed: _handleGetStarted,
 
-              children: [
-                Text(
-                  "Get Started",
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF36B6BD),
 
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight:
-                        FontWeight.w700,
-                  ),
-                ),
+            foregroundColor: Colors.white,
 
-                SizedBox(width: 10),
+            shadowColor: Colors.transparent,
 
-                Icon(
-                  Icons.arrow_forward_rounded,
+            elevation: 0,
+
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17),
+            ),
+          ),
+
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              Text(
+                "Get Started",
+
+                style: TextStyle(
                   color: Colors.white,
-                  size: 21,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
                 ),
-              ],
-            ),
+              ),
+
+              SizedBox(width: 12),
+
+              // White Round Arrow Button
+             CircleAvatar(
+  radius: 19,
+  backgroundColor: Colors.white,
+  child: const Icon(
+    Icons.arrow_forward_rounded,
+    color: Color(0xFF36B6BD),
+    size: 25,
+  ),
+),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
