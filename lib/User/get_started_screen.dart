@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -31,18 +30,16 @@ class _GetStartedScreenState extends State<GetStartedScreen>
 
 
 
-  // static const Color bgDark = Color(0xFF06131C);
+
   static const Color accent = Color(0xFF16C8D8);
   static const Color accentLight = Color(0xFF9FEFF5);
 
-  // ============================================================
-  // BACKGROUND IMAGES
-  // ============================================================
+
 
   static const List<String> _images = [
-    "images/assets/GetStarted1.png",
-    "images/assets/GetStarted2.png",
-    "images/assets/GetStarted3.png",
+    "images/assets/gallery5.png",
+    "images/assets/gallery8.png",
+    "images/assets/gallery4.png",
   ];
 
 
@@ -291,24 +288,34 @@ class _GetStartedScreenState extends State<GetStartedScreen>
   // FULL SCREEN BACKGROUND
   // ============================================================
 
-  Widget _buildFullScreenBackground() {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 900),
-      switchInCurve: Curves.easeInOut,
-      switchOutCurve: Curves.easeInOut,
 
-      child: AnimatedBuilder(
-        key: ValueKey(_activePage),
-        animation: _zoomAnimation,
 
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _zoomAnimation.value,
+Widget _buildFullScreenBackground() {
+  return AnimatedSwitcher(
+    duration: const Duration(milliseconds: 700),
+    switchInCurve: Curves.easeInOut,
+    switchOutCurve: Curves.easeInOut,
 
+    child: Container(
+      key: ValueKey(_activePage),
+      width: double.infinity,
+      height: double.infinity,
+      color: const Color(0xFF0B0F19),
+
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+
+          // =====================================================
+          // FULL SCREEN IMAGE
+          // COVER = poori screen fill hogi, sharp rahegi (no blur),
+          // sirf image ke extra edges thode crop honge — letterbox
+          // (khaali dark patti) nahi aayegi jaisa contain se aa raha tha
+          // =====================================================
+
+          Positioned.fill(
             child: Image.asset(
               _images[_activePage],
-              width: double.infinity,
-              height: double.infinity,
               fit: BoxFit.cover,
 
               errorBuilder: (
@@ -316,37 +323,52 @@ class _GetStartedScreenState extends State<GetStartedScreen>
                 error,
                 stackTrace,
               ) {
-                return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-
-                  // decoration: const BoxDecoration(
-                  //   gradient: LinearGradient(
-                  //     begin: Alignment.topLeft,
-                  //     end: Alignment.bottomRight,
-                  //     // colors: [
-                  //     //   bgDark,
-                  //     //   Color(0xFF0C2530),
-                  //     // ],
-                  //   ),
-                  // ),
-
-                  child: Center(
-                    child: Icon(
-                      _fallbackIcons[
-                          _activePage % _fallbackIcons.length],
-                      size: 100,
-                      color: accent.withOpacity(0.35),
-                    ),
+                return Center(
+                  child: Icon(
+                    _fallbackIcons[
+                      _activePage % _fallbackIcons.length
+                    ],
+                    size: 100,
+                    color: accent.withOpacity(0.35),
                   ),
                 );
               },
             ),
-          );
-        },
+          ),
+
+          // =====================================================
+          // DARK OVERLAY
+          // =====================================================
+
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [
+                    0.0,
+                    0.40,
+                    0.72,
+                    1.0,
+                  ],
+                  colors: [
+                    Colors.black.withOpacity(0.10),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.20),
+                    Colors.black.withOpacity(0.72),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 
   // ============================================================
   // DARK OVERLAY
@@ -868,4 +890,3 @@ class _GetStartedScreenState extends State<GetStartedScreen>
   );
 }
 }
-

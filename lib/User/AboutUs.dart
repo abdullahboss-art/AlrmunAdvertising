@@ -114,14 +114,16 @@ class AboutUsPage extends StatelessWidget {
     BuildContext context,
     Map<String, String> service,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ServiceDetail(
-          service: service, serviceName: '',
-        ),
+  void _openServiceDetail(Map<String, String> service) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => ServiceDetail(
+        service: service,
       ),
-    );
+    ),
+  );
+}
   }
 
   @override

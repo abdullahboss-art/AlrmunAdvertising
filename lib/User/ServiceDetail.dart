@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:adverting_app/User/GetQuote.dart';
+import 'package:adverting_app/User/HomeData.dart';
 
 class ServiceDetail extends StatelessWidget {
   final Map<String, String> service;
@@ -8,16 +8,114 @@ class ServiceDetail extends StatelessWidget {
   const ServiceDetail({
     super.key,
     required this.service,
-    required String serviceName,
   });
 
   // ============================================================
-  // WHAT WE OFFER
+  // COLORS
+  // ============================================================
+
+  static const Color background = Color(0xFF07131B);
+  static const Color cardColor = Color(0xFF171717);
+  static const Color accent = Color(0xFF2FD6F0);
+
+  // ============================================================
+  // CLEAN TITLE
+  // ============================================================
+
+  String _cleanTitle(String title) {
+    return title
+        .replaceAll('\n', ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim()
+        .toUpperCase();
+  }
+
+  // ============================================================
+  // SERVICE DESCRIPTION
+  // ============================================================
+
+  String getDescription(String title) {
+    final String cleanTitle = _cleanTitle(title);
+
+    switch (cleanTitle) {
+      // ========================================================
+      // 1. GRAPHIC & WEB DESIGN
+      // ========================================================
+
+      case "GRAPHIC & WEB DESIGN":
+        return "We create professional and creative graphic and web design solutions that help your brand stand out. From logos and branding to websites and UI/UX, we provide complete design solutions for your business.";
+
+      // ========================================================
+      // 2. ANIMATION & MEDIA PRODUCTION
+      // ========================================================
+
+      case "ANIMATION & MEDIA PRODUCTION":
+        return "Bring your ideas to life with professional animation and media production. We create engaging 2D and 3D animations, promotional videos, motion graphics and high-quality video content.";
+
+      // ========================================================
+      // 3. 3D SIGN SOLUTIONS & FABRICATION
+      // ========================================================
+
+      case "3D SIGN SOLUTIONS & FABRICATION":
+        return "Make your business visible with premium 3D signage and fabrication solutions. We design and produce custom 3D letters, acrylic signs, LED signs, channel letters and other professional signage.";
+
+      // ========================================================
+      // 4. DIGITAL & OFFSET PRINTING
+      // ========================================================
+
+      case "DIGITAL & OFFSET PRINTING":
+        return "Get high-quality printing for your business and marketing needs. We provide digital and offset printing for business cards, brochures, flyers, posters, packaging, stickers and more.";
+
+      // ========================================================
+      // 5. LARGE FORMAT PRINTING
+      // ========================================================
+
+      case "LARGE FORMAT PRINTING":
+        return "Our large format printing solutions are perfect for outdoor advertising and large promotional displays. We provide flex, vinyl, billboard, vehicle branding, wall graphics and other large-scale printing solutions.";
+
+      // ========================================================
+      // 6. SIGNAGE PRODUCTION & INSTALLATION
+      // ========================================================
+
+      case "SIGNAGE PRODUCTION & INSTALLATION":
+        return "We provide complete signage solutions from design and production to professional installation. Our services include indoor and outdoor signage, LED signs, acrylic signs, shop signs and maintenance.";
+
+      // ========================================================
+      // 7. PROMOTIONAL GIFTS PRINTING
+      // ========================================================
+
+      case "PROMOTIONAL GIFTS PRINTING":
+        return "Promote your brand with customized promotional gifts and branded products. We provide custom mugs, T-shirts, caps, keychains, pens, tote bags and corporate promotional gifts.";
+
+      // ========================================================
+      // 8. EVENTS & EXHIBITION STAND DESIGN
+      // ========================================================
+
+      case "EVENTS & EXHIBITION STAND DESIGN":
+        return "Create an impressive presence at your next event with professional exhibition stand and event branding solutions. We handle stand design, 3D visualization, fabrication, branding and installation.";
+
+      // ========================================================
+      // DEFAULT
+      // ========================================================
+
+      default:
+        return "Professional advertising and creative solutions customized according to your business requirements.";
+    }
+  }
+
+  // ============================================================
+  // SERVICE OFFERS
   // ============================================================
 
   List<String> getOffers(String title) {
-    switch (title) {
-      case "Graphic Design":
+    final String cleanTitle = _cleanTitle(title);
+
+    switch (cleanTitle) {
+      // ========================================================
+      // 1. GRAPHIC & WEB DESIGN
+      // ========================================================
+
+      case "GRAPHIC & WEB DESIGN":
         return [
           "Logo Design",
           "Brand Identity",
@@ -26,11 +124,18 @@ class ServiceDetail extends StatelessWidget {
           "Flyer Design",
           "Social Media Design",
           "Packaging Design",
-          "Banner Design",
+          "Website Design",
           "UI/UX Design",
+          "Banner Design",
+          "Poster Design",
+          "Corporate Design",
         ];
 
-      case "Animation & Media":
+      // ========================================================
+      // 2. ANIMATION & MEDIA PRODUCTION
+      // ========================================================
+
+      case "ANIMATION & MEDIA PRODUCTION":
         return [
           "2D Animation",
           "3D Animation",
@@ -38,141 +143,162 @@ class ServiceDetail extends StatelessWidget {
           "Video Editing",
           "Explainer Videos",
           "Product Advertisement",
-          "YouTube Editing",
-          "Reels Editing",
+          "YouTube Video Editing",
+          "Reels & Short Videos",
           "Corporate Videos",
+          "Promotional Videos",
+          "Intro & Outro Videos",
+          "Visual Effects",
         ];
 
-      case "3D Visualization":
+      // ========================================================
+      // 3. 3D SIGN SOLUTIONS & FABRICATION
+      // ========================================================
+
+      case "3D SIGN SOLUTIONS & FABRICATION":
         return [
-          "Interior Rendering",
-          "Exterior Rendering",
-          "3D Product Design",
-          "Furniture Modeling",
-          "Architecture Modeling",
-          "Walkthrough Animation",
-          "Industrial Design",
-          "Landscape Design",
-          "3D Floor Plans",
+          "3D Letter Signs",
+          "3D Channel Letters",
+          "Acrylic Signs",
+          "LED Sign Boards",
+          "Stainless Steel Signs",
+          "Metal Fabrication",
+          "Shop Front Signs",
+          "Indoor Signage",
+          "Outdoor Signage",
+          "Backlit Signs",
+          "Neon Signage",
+          "Custom 3D Signs",
         ];
 
-      case "Digital & Offset":
+      // ========================================================
+      // 4. DIGITAL & OFFSET PRINTING
+      // ========================================================
+
+      case "DIGITAL & OFFSET PRINTING":
         return [
           "Business Cards",
           "Brochures",
           "Flyers",
           "Posters",
-          "Roll-up Stands",
           "Catalog Printing",
+          "Sticker Printing",
           "Packaging Printing",
           "Offset Printing",
-          "Sticker Printing",
+          "Marketing Materials",
+          "Letterhead Printing",
+          "Envelope Printing",
+          "Invitation Cards",
         ];
 
-      case "Outdoor Advertising":
+      // ========================================================
+      // 5. LARGE FORMAT PRINTING
+      // ========================================================
+
+      case "LARGE FORMAT PRINTING":
         return [
-          "Social Media Marketing",
-          "Facebook Marketing",
-          "Instagram Marketing",
-          "Google Ads",
-          "Content Marketing",
-          "SEO",
-          "Brand Promotion",
-          "Online Advertising",
-          "Marketing Strategy",
+          "Flex Printing",
+          "Vinyl Printing",
+          "One Way Vision",
+          "Billboard Printing",
+          "Building Wraps",
+          "Vehicle Branding",
+          "Backlit Printing",
+          "Wall Graphics",
+          "Large Promotional Prints",
+          "Window Graphics",
+          "Outdoor Banners",
+          "Event Backdrops",
         ];
 
-      case "Branding":
+      // ========================================================
+      // 6. SIGNAGE PRODUCTION & INSTALLATION
+      // ========================================================
+
+      case "SIGNAGE PRODUCTION & INSTALLATION":
         return [
-          "Logo Design",
-          "Brand Identity",
-          "Business Cards",
-          "Letterhead Design",
-          "Brand Guidelines",
-          "Packaging Branding",
-          "Social Media Branding",
-          "Marketing Materials",
-          "Complete Brand Identity",
-        ];
-      case "Flex Printing":
-        return [
-          "Logo Design",
-          "Brand Identity",
-          "Business Cards",
-          "Letterhead Design",
-          "Brand Guidelines",
-          "Packaging Branding",
-          "Social Media Branding",
-          "Marketing Materials",
-          "Complete Brand Identity",
-        ];
-      case "Sign Boards":
-        return [
-          "Logo Design",
-          "Brand Identity",
-          "Business Cards",
-          "Letterhead Design",
-          "Brand Guidelines",
-          "Packaging Branding",
-          "Social Media Branding",
-          "Marketing Materials",
-          "Complete Brand Identity",
-        ];
-      case "3D Letters":
-        return [
-          "Logo Design",
-          "Brand Identity",
-          "Business Cards",
-          "Letterhead Design",
-          "Brand Guidelines",
-          "Packaging Branding",
-          "Social Media Branding",
-          "Marketing Materials",
-          "Complete Brand Identity",
+          "Sign Board Production",
+          "Shop Signage",
+          "Indoor Signage",
+          "Outdoor Signage",
+          "LED Signage",
+          "Acrylic Signage",
+          "Directional Signs",
+          "Wayfinding Signs",
+          "Installation Services",
+          "Maintenance & Repair",
+          "Corporate Signage",
+          "Custom Signage",
         ];
 
-      case "Business Cards":
+      // ========================================================
+      // 7. PROMOTIONAL GIFTS PRINTING
+      // ========================================================
+
+      case "PROMOTIONAL GIFTS PRINTING":
         return [
-          "Logo Design",
-          "Brand Identity",
-          "Business Cards",
-          "Letterhead Design",
-          "Brand Guidelines",
-          "Packaging Branding",
-          "Social Media Branding",
-          "Marketing Materials",
-          "Complete Brand Identity",
+          "Custom Mugs",
+          "T-Shirts Printing",
+          "Caps & Hats",
+          "Keychains",
+          "Pens",
+          "Tote Bags",
+          "Corporate Gifts",
+          "Customized Products",
+          "Branded Promotional Items",
+          "Key Rings",
+          "Diaries & Notebooks",
+          "Promotional Merchandise",
         ];
-      case "Events & Exhibition":
+
+      // ========================================================
+      // 8. EVENTS & EXHIBITION STAND DESIGN
+      // ========================================================
+
+      case "EVENTS & EXHIBITION STAND DESIGN":
         return [
-          "Logo Design",
-          "Brand Identity",
-          "Business Cards",
-          "Letterhead Design",
-          "Brand Guidelines",
-          "Packaging Branding",
-          "Social Media Branding",
-          "Marketing Materials",
-          "Complete Brand Identity",
+          "Exhibition Stand Design",
+          "3D Stand Visualization",
+          "Booth Design",
+          "Backdrop Design",
+          "Display Counters",
+          "Promotional Displays",
+          "Event Branding",
+          "Stand Fabrication",
+          "Stand Installation",
+          "Stage Branding",
+          "Reception Counters",
+          "Complete Event Setup",
         ];
+
+      // ========================================================
+      // DEFAULT
+      // ========================================================
+
       default:
-        return [];
+        return [
+          "Custom Design Solutions",
+          "Professional Consultation",
+          "Customized Services",
+        ];
     }
   }
 
   // ============================================================
-  // SERVICE COLOR
+  // BUILD
   // ============================================================
 
-static const Color background = Color(0xFF07131B);
-  static const Color cardColor = Color(0xff171717);
-  static const Color accent = Color(0xff2FD6F0);
-
   @override
-  Widget build(BuildContext context) {  
-    final String title = service["title"] ?? "";
-    final String description = service["description"] ?? "";
-    final String image = service["image"] ?? "";
+  Widget build(BuildContext context) {
+    final String title = service['title'] ?? 'Service';
+
+    final String cleanTitle = _cleanTitle(title);
+
+    final String image = service['image'] ?? '';
+
+    final String subtitle = service['subtitle'] ?? '';
+
+    final String description = getDescription(title);
 
     final List<String> offers = getOffers(title);
 
@@ -200,7 +326,10 @@ static const Color background = Color(0xFF07131B);
         ),
 
         title: Text(
-          title,
+          cleanTitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+
           style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -218,11 +347,11 @@ static const Color background = Color(0xFF07131B);
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
 
-            // ==================================================
+          children: [
+            // ====================================================
             // SERVICE IMAGE
-            // ==================================================
+            // ====================================================
 
             ClipRRect(
               borderRadius: const BorderRadius.only(
@@ -233,8 +362,10 @@ static const Color background = Color(0xFF07131B);
               child: image.isNotEmpty
                   ? Image.asset(
                       image,
+
                       width: double.infinity,
                       height: 260,
+
                       fit: BoxFit.cover,
 
                       errorBuilder: (
@@ -250,38 +381,60 @@ static const Color background = Color(0xFF07131B);
 
             const SizedBox(height: 25),
 
+            // ====================================================
+            // CONTENT
+            // ====================================================
+
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20,
               ),
 
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
-
-                  // ==================================================
-                  // SERVICE TITLE
-                  // ==================================================
+                  // =================================================
+                  // TITLE
+                  // =================================================
 
                   Text(
-                    title,
+                    cleanTitle,
+
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 27,
                       fontWeight: FontWeight.bold,
+                      height: 1.2,
                     ),
                   ),
 
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 9),
 
-                  // ==================================================
+                  // =================================================
+                  // SUBTITLE
+                  // =================================================
+
+                  if (subtitle.isNotEmpty)
+                    Text(
+                      subtitle,
+
+                      style: const TextStyle(
+                        color: accent,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+                  const SizedBox(height: 15),
+
+                  // =================================================
                   // DESCRIPTION
-                  // ==================================================
+                  // =================================================
 
                   Text(
                     description,
+
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 15,
@@ -291,12 +444,13 @@ static const Color background = Color(0xFF07131B);
 
                   const SizedBox(height: 30),
 
-                  // ==================================================
+                  // =================================================
                   // WHAT WE OFFER
-                  // ==================================================
+                  // =================================================
 
                   const Text(
                     "What We Offer",
+
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -308,6 +462,7 @@ static const Color background = Color(0xFF07131B);
 
                   const Text(
                     "Here are the services and products you can get from us.",
+
                     style: TextStyle(
                       color: Colors.white38,
                       fontSize: 12,
@@ -316,165 +471,131 @@ static const Color background = Color(0xFF07131B);
 
                   const SizedBox(height: 16),
 
-                  // ==================================================
-                  // OFFER LIST
-                  // ==================================================
+                  // =================================================
+                  // OFFER CARD
+                  // =================================================
 
                   Container(
                     width: double.infinity,
 
                     padding: const EdgeInsets.symmetric(
                       horizontal: 18,
-                      vertical: 12,
+                      vertical: 8,
                     ),
 
                     decoration: BoxDecoration(
                       color: cardColor,
-                      borderRadius:
-                          BorderRadius.circular(18),
+
+                      borderRadius: BorderRadius.circular(18),
 
                       border: Border.all(
-                        color: Colors.white.withOpacity(
-                          0.06,
-                        ),
+                        color: Colors.white.withOpacity(0.06),
                       ),
                     ),
 
-                    child: offers.isEmpty
-                        ? const Padding(
-                            padding:
-                                EdgeInsets.symmetric(
+                    child: Column(
+                      children: List.generate(
+                        offers.length,
+                        (index) {
+                          final String item = offers[index];
+
+                          final bool isLast =
+                              index == offers.length - 1;
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 12,
                             ),
 
-                            child: Text(
-                              "Services available on request.",
-                              style: TextStyle(
-                                color: Colors.white60,
-                                fontSize: 14,
-                              ),
+                            decoration: BoxDecoration(
+                              border: isLast
+                                  ? null
+                                  : Border(
+                                      bottom: BorderSide(
+                                        color: Colors.white
+                                            .withOpacity(0.05),
+                                      ),
+                                    ),
                             ),
-                          )
-                        : Column(
-                            children: List.generate(
-                              offers.length,
-                              (index) {
-                                final item =
-                                    offers[index];
 
-                                return Container(
-                                  padding:
-                                      const EdgeInsets
-                                          .symmetric(
-                                    vertical: 12,
+                            child: Row(
+                              children: [
+                                // ==================================
+                                // CHECK ICON
+                                // ==================================
+
+                                Container(
+                                  width: 30,
+                                  height: 30,
+
+                                  decoration: BoxDecoration(
+                                    color:
+                                        accent.withOpacity(0.10),
+
+                                    borderRadius:
+                                        BorderRadius.circular(9),
                                   ),
 
-                                  decoration:
-                                      BoxDecoration(
-                                    border: index ==
-                                            offers.length -
-                                                1
-                                        ? null
-                                        : Border(
-                                            bottom:
-                                                BorderSide(
-                                              color: Colors
-                                                  .white
-                                                  .withOpacity(
-                                                0.05,
-                                              ),
-                                            ),
-                                          ),
+                                  child: const Icon(
+                                    Icons.check_rounded,
+                                    color: accent,
+                                    size: 18,
                                   ),
+                                ),
 
-                                  child: Row(
-                                    children: [
+                                const SizedBox(width: 12),
 
-                                      // CHECK ICON
-                                      Container(
-                                        width: 30,
-                                        height: 30,
+                                // ==================================
+                                // OFFER NAME
+                                // ==================================
 
-                                        decoration:
-                                            BoxDecoration(
-                                          color: accent
-                                              .withOpacity(
-                                            0.10,
-                                          ),
+                                Expanded(
+                                  child: Text(
+                                    item,
 
-                                          borderRadius:
-                                              BorderRadius
-                                                  .circular(
-                                            9,
-                                          ),
-                                        ),
-
-                                        child: const Icon(
-                                          Icons
-                                              .check_rounded,
-                                          color: accent,
-                                          size: 18,
-                                        ),
-                                      ),
-
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-
-                                      // SERVICE NAME
-                                      Expanded(
-                                        child: Text(
-                                          item,
-                                          style:
-                                              const TextStyle(
-                                            color:
-                                                Colors.white,
-                                            fontSize: 14,
-                                            fontWeight:
-                                                FontWeight
-                                                    .w500,
-                                          ),
-                                        ),
-                                      ),
-
-                                      const Icon(
-                                        Icons
-                                            .arrow_forward_ios_rounded,
-                                        color:
-                                            Colors.white24,
-                                        size: 13,
-                                      ),
-                                    ],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                );
-                              },
+                                ),
+
+                                // ==================================
+                                // ARROW
+                                // ==================================
+
+                                const Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: Colors.white24,
+                                  size: 13,
+                                ),
+                              ],
                             ),
-                          ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
 
                   const SizedBox(height: 35),
 
-                  // ==================================================
-                  // GET A QUOTE
-                  // ==================================================
+                  // =================================================
+                  // GET QUOTE BUTTON
+                  // =================================================
 
                   SizedBox(
                     width: double.infinity,
                     height: 55,
 
                     child: ElevatedButton(
-                      style:
-                          ElevatedButton.styleFrom(
+                      style: ElevatedButton.styleFrom(
                         backgroundColor: accent,
                         foregroundColor: Colors.black,
                         elevation: 0,
 
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            30,
-                          ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
 
@@ -482,9 +603,8 @@ static const Color background = Color(0xFF07131B);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                GetAQuotePage(
-                              serviceTitle: title,
+                            builder: (_) => GetAQuotePage(
+                              serviceTitle: cleanTitle,
                             ),
                           ),
                         );
@@ -495,10 +615,8 @@ static const Color background = Color(0xFF07131B);
                             MainAxisAlignment.center,
 
                         children: [
-
                           Icon(
-                            Icons
-                                .request_quote_outlined,
+                            Icons.request_quote_outlined,
                             size: 19,
                           ),
 
@@ -506,10 +624,10 @@ static const Color background = Color(0xFF07131B);
 
                           Text(
                             "Get a Quote",
+
                             style: TextStyle(
                               fontSize: 17,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -535,7 +653,8 @@ static const Color background = Color(0xFF07131B);
     return Container(
       width: double.infinity,
       height: 260,
-      color: const Color(0xff171717),
+
+      color: cardColor,
 
       child: const Center(
         child: Icon(
@@ -547,4 +666,3 @@ static const Color background = Color(0xFF07131B);
     );
   }
 }
-
