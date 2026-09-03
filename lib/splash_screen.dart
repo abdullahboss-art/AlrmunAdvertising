@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:adverting_app/User/Home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'User/get_started_screen.dart';
 
@@ -15,16 +13,27 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
+  // ================================================================
+  // ANIMATION CONTROLLERS
+  // ================================================================
+
   late AnimationController _logoController;
   late AnimationController _glowController;
   late AnimationController _backgroundController;
   late AnimationController _lineController;
   late AnimationController _frameController;
 
+  // ================================================================
+  // ANIMATIONS
+  // ================================================================
+
   late Animation<double> _logoScale;
   late Animation<double> _logoOpacity;
+
   late Animation<double> _glow;
+
   late Animation<double> _lineGrow;
+
   late Animation<double> _frameScale;
   late Animation<double> _frameOpacity;
 
@@ -33,24 +42,32 @@ class _SplashScreenState extends State<SplashScreen>
   double progress = 0.0;
   int percentage = 0;
 
+  // ================================================================
+  // COLORS
+  // ================================================================
+
   static const Color kAccent = Color(0xFF16C8D8);
   static const Color kAccent2 = Color(0xFF5EF0E0);
+
+  // ================================================================
+  // INIT
+  // ================================================================
 
   @override
   void initState() {
     super.initState();
 
-    // ============================================================
-    // LOGO ENTRANCE
-    // ============================================================
+    // ================================================================
+    // LOGO ANIMATION
+    // ================================================================
 
     _logoController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 900),
     );
 
     _logoScale = Tween<double>(
-      begin: 0.75,
+      begin: 0.65,
       end: 1.0,
     ).animate(
       CurvedAnimation(
@@ -64,17 +81,20 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeOut,
     );
 
-    // ============================================================
-    // FRAME (SCREEN) BUILD ANIMATION — pehle logo, phir screen banti hai
-    // ============================================================
+    // ================================================================
+    // LED SCREEN / FRAME ANIMATION
+    //
+    // Pehle frame bohat thin hoga
+    // Phir center se full screen banegi
+    // ================================================================
 
     _frameController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 750),
+      duration: const Duration(milliseconds: 950),
     );
 
     _frameScale = Tween<double>(
-      begin: 0.035,
+      begin: 0.02,
       end: 1.0,
     ).animate(
       CurvedAnimation(
@@ -85,12 +105,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     _frameOpacity = CurvedAnimation(
       parent: _frameController,
-      curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
+      curve: const Interval(
+        0.0,
+        0.35,
+        curve: Curves.easeOut,
+      ),
     );
 
-    // ============================================================
-    // LOGO GLOW
-    // ============================================================
+    // ================================================================
+    // GLOW
+    // ================================================================
 
     _glowController = AnimationController(
       vsync: this,
@@ -107,13 +131,13 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // ============================================================
-    // CONNECTOR LINE (box -> divider) GROW ANIMATION
-    // ============================================================
+    // ================================================================
+    // CONNECTOR LINE
+    // ================================================================
 
     _lineController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 650),
     );
 
     _lineGrow = CurvedAnimation(
@@ -121,61 +145,97 @@ class _SplashScreenState extends State<SplashScreen>
       curve: Curves.easeOut,
     );
 
-    // ============================================================
-    // BACKGROUND ANIMATION
-    // ============================================================
+    // ================================================================
+    // BACKGROUND
+    // ================================================================
 
     _backgroundController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 10),
     )..repeat();
 
-    // ============================================================
-    // START
-    // ============================================================
+    // ================================================================
+    // START SPLASH
+    // ================================================================
 
     _startSplash();
   }
 
-  // ============================================================
-  // START SPLASH
-  // ============================================================
+  // ================================================================
+  // SPLASH ANIMATION SEQUENCE
+  // ================================================================
 
   Future<void> _startSplash() async {
-    // Step 1: Pehle sirf LOGO dikhta hai
+    // --------------------------------------------------------------
+    // STEP 1
+    // Pehle sirf logo appear hoga
+    // --------------------------------------------------------------
+
     await _logoController.forward();
 
     if (!mounted) return;
 
-    // Logo ko thora time do screen par settle hone ke liye
+    // --------------------------------------------------------------
+    // Logo ko thora hold karte hain
+    // --------------------------------------------------------------
+
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    );
+
+    if (!mounted) return;
+
+    // --------------------------------------------------------------
+    // STEP 2
+    // LED SCREEN FRAME BUILD
+    // --------------------------------------------------------------
+
+    await _frameController.forward();
+
+    if (!mounted) return;
+
+    // --------------------------------------------------------------
+    // STEP 3
+    // Frame complete hone ke baad glow start
+    // --------------------------------------------------------------
+
+    _glowController.repeat(reverse: true);
+
+    // --------------------------------------------------------------
+    // STEP 4
+    // Connector line
+    // --------------------------------------------------------------
+
+    await Future.delayed(
+      const Duration(milliseconds: 100),
+    );
+
+    if (!mounted) return;
+
+    _lineController.forward();
+
+    // --------------------------------------------------------------
+    // STEP 5
+    // Small pause
+    // --------------------------------------------------------------
+
     await Future.delayed(
       const Duration(milliseconds: 350),
     );
 
     if (!mounted) return;
 
-    // Step 2: Ab uske around SCREEN (frame) banti hai
-    await _frameController.forward();
-
-    if (!mounted) return;
-
-    // Frame ban gaya, ab glow pulse shuru
-    _glowController.repeat(reverse: true);
-
-    _lineController.forward();
-
-    await Future.delayed(
-      const Duration(milliseconds: 300),
-    );
-
-    if (!mounted) return;
+    // --------------------------------------------------------------
+    // STEP 6
+    // START LOADING
+    // --------------------------------------------------------------
 
     _startProgress();
   }
 
-  // ============================================================
+  // ================================================================
   // PROGRESS 0 -> 100
-  // ============================================================
+  // ================================================================
 
   void _startProgress() {
     int currentPercentage = 0;
@@ -190,19 +250,22 @@ class _SplashScreenState extends State<SplashScreen>
 
         currentPercentage++;
 
+        if (currentPercentage > 100) {
+          currentPercentage = 100;
+        }
+
         setState(() {
           percentage = currentPercentage;
           progress = currentPercentage / 100;
         });
 
-        // ========================================================
-        // 100% REACHED
-        // ========================================================
+        // ------------------------------------------------------------
+        // 100%
+        // ------------------------------------------------------------
 
         if (currentPercentage >= 100) {
           timer.cancel();
 
-          // 100% ko screen par clearly show hone do
           Future.delayed(
             const Duration(milliseconds: 1000),
             () {
@@ -216,19 +279,19 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
-  // ============================================================
+  // ================================================================
   // NEXT SCREEN
-  // ============================================================
+  // ================================================================
 
   void _goNext() {
     if (!mounted) return;
 
-    // final user = FirebaseAuth.instance.currentUser;
-
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 600),
+        transitionDuration: const Duration(
+          milliseconds: 650,
+        ),
         pageBuilder: (_, animation, __) {
           return const GetStartedScreen();
         },
@@ -241,6 +304,10 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+
+  // ================================================================
+  // DISPOSE
+  // ================================================================
 
   @override
   void dispose() {
@@ -255,9 +322,9 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  // ============================================================
+  // ================================================================
   // UI
-  // ============================================================
+  // ================================================================
 
   @override
   Widget build(BuildContext context) {
@@ -265,9 +332,9 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: const Color(0xFF050B10),
       body: Stack(
         children: [
-          // ========================================================
-          // BACKGROUND
-          // ========================================================
+          // ==========================================================
+          // BACKGROUND GRADIENT
+          // ==========================================================
 
           Container(
             decoration: const BoxDecoration(
@@ -284,9 +351,9 @@ class _SplashScreenState extends State<SplashScreen>
             ),
           ),
 
-          // ========================================================
-          // MOVING LIGHT
-          // ========================================================
+          // ==========================================================
+          // MOVING BACKGROUND LIGHT
+          // ==========================================================
 
           AnimatedBuilder(
             animation: _backgroundController,
@@ -300,9 +367,9 @@ class _SplashScreenState extends State<SplashScreen>
             },
           ),
 
-          // ========================================================
+          // ==========================================================
           // MAIN CONTENT
-          // ========================================================
+          // ==========================================================
 
           SafeArea(
             child: Column(
@@ -310,79 +377,126 @@ class _SplashScreenState extends State<SplashScreen>
                 const Spacer(flex: 3),
 
                 // ====================================================
-                // LOGO — pehle akela dikhta hai
-                // FRAME/SCREEN — uske baad logo ke around ban ke aati hai
+                // LOGO + LED SCREEN
                 // ====================================================
 
                 SizedBox(
                   width: 340,
-                  height: 200,
+                  height: 165,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // -----------------------------------------------
-                      // STEP 2: Screen/frame apne aap build hoti hai
-                      // (jaise TV/LED screen ON hoti hai — pehle patli
-                      // line, phir puri height tak khulti hai)
-                      // -----------------------------------------------
+                      // ==================================================
+                      // LED SCREEN / FRAME
+                      //
+                      // YE LOGO KE BAAD APPEAR HOGA
+                      // ==================================================
+
                       AnimatedBuilder(
-                        animation: Listenable.merge(
-                          [_frameController, _glow],
-                        ),
+                        animation: Listenable.merge([
+                          _frameController,
+                          _glowController,
+                        ]),
                         builder: (context, child) {
+                          final bool frameCompleted =
+                              _frameController.isCompleted;
+
+                          final double glowValue =
+                              frameCompleted ? _glow.value : 1.0;
+
                           return Opacity(
                             opacity: _frameOpacity.value,
-                            child: Transform(
-                              alignment: Alignment.center,
-                              transform: Matrix4.identity()
-                                ..scale(1.0, _frameScale.value),
+                            child: Transform.scale(
+                              scale: _frameScale.value,
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
-                                  // Outer soft glow (glow shuru hoti hai
-                                  // sirf jab frame ban chuka ho)
+                                  // ====================================
+                                  // OUTER GLOW
+                                  // ====================================
+
                                   Container(
-                                    width: 340 *
-                                        (_frameController.isCompleted
-                                            ? _glow.value
-                                            : 1.0),
-                                    height: 200 *
-                                        (_frameController.isCompleted
-                                            ? _glow.value
-                                            : 1.0),
+                                    width: 340 * glowValue,
+                                    height: 165 * glowValue,
                                     decoration: BoxDecoration(
                                       borderRadius:
-                                          BorderRadius.circular(6),
+                                          BorderRadius.circular(8),
                                       boxShadow: [
                                         BoxShadow(
                                           color:
-                                              kAccent.withOpacity(0.35),
-                                          blurRadius: 60,
-                                          spreadRadius: 4,
+                                              kAccent.withOpacity(0.30),
+                                          blurRadius: 55,
+                                          spreadRadius: 3,
                                         ),
                                       ],
                                     ),
                                   ),
 
-                                  // Framed box (double border)
+                                  // ====================================
+                                  // OUTER FRAME
+                                  // ====================================
+
+                                  Container(
+                                    width: 318,
+                                    height: 165,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(5),
+                                      border: Border.all(
+                                        color:
+                                            kAccent.withOpacity(0.30),
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+
+                                  // ====================================
+                                  // MAIN LED SCREEN
+                                  // ====================================
+
                                   Container(
                                     width: 300,
                                     height: 165,
                                     padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
                                       color: const Color(0xFF03080D)
-                                          .withOpacity(0.6),
+                                          .withOpacity(0.75),
                                       border: Border.all(
-                                        color: kAccent.withOpacity(0.55),
+                                        color:
+                                            kAccent.withOpacity(0.60),
                                         width: 1.4,
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              kAccent.withOpacity(0.15),
+                                          blurRadius: 15,
+                                        ),
+                                      ],
                                     ),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(
-                                          color: kAccent.withOpacity(0.9),
+                                          color:
+                                              kAccent.withOpacity(0.90),
                                           width: 1,
                                         ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  // ====================================
+                                  // INNER SCREEN GLOW
+                                  // ====================================
+
+                                  Container(
+                                    width: 286,
+                                    height: 151,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color:
+                                            kAccent.withOpacity(0.18),
+                                        width: 1,
                                       ),
                                     ),
                                   ),
@@ -393,9 +507,12 @@ class _SplashScreenState extends State<SplashScreen>
                         },
                       ),
 
-                      // -----------------------------------------------
-                      // STEP 1: Sirf logo, sabse pehle dikhta hai
-                      // -----------------------------------------------
+                      // ==================================================
+                      // LOGO
+                      //
+                      // YE SABSE PEHLE APPEAR HOGA
+                      // ==================================================
+
                       FadeTransition(
                         opacity: _logoOpacity,
                         child: ScaleTransition(
@@ -406,6 +523,14 @@ class _SplashScreenState extends State<SplashScreen>
                             child: Image.asset(
                               "images/assets/Alrmun_logo.png",
                               fit: BoxFit.contain,
+                              errorBuilder:
+                                  (context, error, stackTrace) {
+                                return const Icon(
+                                  Icons.image_not_supported_outlined,
+                                  color: kAccent,
+                                  size: 42,
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -415,7 +540,7 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
 
                 // ====================================================
-                // CONNECTOR LINE (T shape growing down from box)
+                // CONNECTOR LINE
                 // ====================================================
 
                 AnimatedBuilder(
@@ -426,14 +551,14 @@ class _SplashScreenState extends State<SplashScreen>
                         Container(
                           width: 1.6,
                           height: 34 * _lineGrow.value,
-                          color: kAccent.withOpacity(0.8),
+                          color: kAccent.withOpacity(0.80),
                         ),
                         Opacity(
                           opacity: _lineGrow.value,
                           child: Container(
                             width: 120,
                             height: 1.6,
-                            color: kAccent.withOpacity(0.8),
+                            color: kAccent.withOpacity(0.80),
                           ),
                         ),
                       ],
@@ -444,7 +569,7 @@ class _SplashScreenState extends State<SplashScreen>
                 const SizedBox(height: 26),
 
                 // ====================================================
-                // BRAND NAME
+                // BRANDING
                 // ====================================================
 
                 FadeTransition(
@@ -504,23 +629,25 @@ class _SplashScreenState extends State<SplashScreen>
                 const Spacer(flex: 3),
 
                 // ====================================================
-                // LOADING
+                // LOADING BAR
                 // ====================================================
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60),
                   child: Column(
                     children: [
-                      // =================================================
+                      // ==============================================
                       // PROGRESS BAR
-                      // =================================================
+                      // ==============================================
 
                       Container(
                         width: double.infinity,
                         height: 3,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius:
+                              BorderRadius.circular(20),
                         ),
                         child: FractionallySizedBox(
                           alignment: Alignment.centerLeft,
@@ -528,12 +655,17 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Container(
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [kAccent, kAccent2],
+                                colors: [
+                                  kAccent,
+                                  kAccent2,
+                                ],
                               ),
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius:
+                                  BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: kAccent.withOpacity(0.5),
+                                  color:
+                                      kAccent.withOpacity(0.50),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -543,6 +675,10 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
 
                       const SizedBox(height: 10),
+
+                      // ==============================================
+                      // PERCENTAGE
+                      // ==============================================
 
                       Text(
                         "$percentage%",
@@ -583,7 +719,7 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 // ==================================================================
-// PREMIUM BACKGROUND
+// PREMIUM ANIMATED BACKGROUND
 // ==================================================================
 
 class _PremiumBackgroundPainter extends CustomPainter {
@@ -595,7 +731,10 @@ class _PremiumBackgroundPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final time = t * 2 * pi;
 
+    // ==============================================================
     // TOP LIGHT
+    // ==============================================================
+
     final topCenter = Offset(
       size.width * 0.12 + cos(time) * 35,
       size.height * 0.18 + sin(time) * 30,
@@ -620,7 +759,10 @@ class _PremiumBackgroundPainter extends CustomPainter {
       topPaint,
     );
 
+    // ==============================================================
     // BOTTOM LIGHT
+    // ==============================================================
+
     final bottomCenter = Offset(
       size.width * 0.88 + sin(time * 0.7) * 40,
       size.height * 0.78 + cos(time * 0.7) * 35,

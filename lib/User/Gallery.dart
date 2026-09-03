@@ -100,58 +100,90 @@ class _GalleryPageState extends State<GalleryPage> {
     );
   }
 
-  Widget _header() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 15, 18, 22),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _backButton(),
-              const SizedBox(width: 14),
-              const Text(
-                "Portofio",
-                style: TextStyle(
-                  color: Color(0xFF2BC3DC),
-                  fontSize: 27,
-                  fontWeight: FontWeight.w800,
-                ),
+Widget _header() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(18, 15, 18, 22),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            
+              
+
+            const Text(
+              "Portofio",
+              style: TextStyle(
+                color: Color(0xFF2BC3DC),
+                fontSize: 27,
+                fontWeight: FontWeight.w800,
               ),
-            ],
-          ),
+            ),
 
-          const SizedBox(height: 26),
+            const Spacer(),
 
-          Row(
-            children: [
-              Container(
-                width: 4,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: accent,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            // // HOME ARROW BUTTON
+            // InkWell(
+            //   borderRadius: BorderRadius.circular(12),
+            //   onTap: () {
+            //     Navigator.pushReplacement(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (_) => const HomeScreen(),
+            //       ),
+            //     );
+            //   },
+            //   child: Container(
+            //     width: 42,
+            //     height: 42,
+            //     decoration: BoxDecoration(
+            //       color: card,
+            //       borderRadius: BorderRadius.circular(12),
+            //       border: Border.all(
+            //         color: Colors.white.withOpacity(.06),
+            //       ),
+            //     ),
+            //     child: const Icon(
+            //       Icons.arrow_forward_ios_rounded,
+            //       color: Colors.white,
+            //       size: 17,
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
+
+        const SizedBox(height: 26),
+
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 24,
+              decoration: BoxDecoration(
+                color: accent,
+                borderRadius: BorderRadius.circular(10),
               ),
-              const SizedBox(width: 10),
-              const Text(
-                "Our Completed Projects",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              "Our Completed Projects",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
 
-          const SizedBox(height: 15),
+        const SizedBox(height: 15),
 
-          _filters(),
-        ],
-      ),
-    );
-  }
+        _filters(),
+      ],
+    ),
+  );
+}
 
   Widget _backButton() {
     return InkWell(

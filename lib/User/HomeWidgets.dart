@@ -47,7 +47,8 @@ class HomeWidgets {
                         accentDark,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius:
+                        BorderRadius.circular(5),
                   ),
                 ),
 
@@ -61,11 +62,14 @@ class HomeWidgets {
                       Text(
                         title,
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
+                        overflow:
+                            TextOverflow.ellipsis,
+                        style:
+                            GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 20,
-                          fontWeight: FontWeight.w800,
+                          fontWeight:
+                              FontWeight.w800,
                           letterSpacing: .2,
                         ),
                       ),
@@ -75,11 +79,14 @@ class HomeWidgets {
                       Text(
                         subtitle,
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
+                        overflow:
+                            TextOverflow.ellipsis,
+                        style:
+                            GoogleFonts.poppins(
                           color: Colors.white54,
                           fontSize: 10,
-                          fontWeight: FontWeight.w400,
+                          fontWeight:
+                              FontWeight.w400,
                         ),
                       ),
                     ],
@@ -98,29 +105,37 @@ class HomeWidgets {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius:
+                  BorderRadius.circular(11),
               onTap: onButtonTap,
               child: Container(
-                padding: const EdgeInsets.symmetric(
+                padding:
+                    const EdgeInsets.symmetric(
                   horizontal: 11,
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(.08),
-                  borderRadius: BorderRadius.circular(11),
+                  color:
+                      accent.withOpacity(.08),
+                  borderRadius:
+                      BorderRadius.circular(11),
                   border: Border.all(
-                    color: accent.withOpacity(.22),
+                    color:
+                        accent.withOpacity(.22),
                   ),
                 ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize:
+                      MainAxisSize.min,
                   children: [
                     Text(
                       buttonText,
-                      style: GoogleFonts.poppins(
+                      style:
+                          GoogleFonts.poppins(
                         color: accent,
                         fontSize: 10.5,
-                        fontWeight: FontWeight.w600,
+                        fontWeight:
+                            FontWeight.w600,
                       ),
                     ),
 
@@ -128,8 +143,10 @@ class HomeWidgets {
 
                     Icon(
                       showLess
-                          ? Icons.keyboard_arrow_up_rounded
-                          : Icons.arrow_forward_rounded,
+                          ? Icons
+                              .keyboard_arrow_up_rounded
+                          : Icons
+                              .arrow_forward_rounded,
                       color: accent,
                       size: 16,
                     ),
@@ -149,7 +166,9 @@ class HomeWidgets {
 
   static Widget servicesGrid({
     required List<Map<String, String>> services,
-    required Function(Map<String, String>) onTap,
+    required Function(
+      Map<String, String>,
+    ) onTap,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -157,7 +176,8 @@ class HomeWidgets {
       ),
       child: GridView.builder(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        physics:
+            const NeverScrollableScrollPhysics(),
 
         itemCount: services.length,
 
@@ -169,19 +189,11 @@ class HomeWidgets {
           childAspectRatio: .85,
         ),
 
-        // =========================================================
-        // ITEM BUILDER
-        // =========================================================
-
         itemBuilder: (context, index) {
           final service = services[index];
 
           return serviceCard(
             service: service,
-
-            // IMPORTANT:
-            // Card click -> HomeScreen ka onTap
-            // -> ServiceDetail page
             onTap: () {
               onTap(service);
             },
@@ -203,29 +215,29 @@ class HomeWidgets {
       color: Colors.transparent,
 
       child: InkWell(
-        borderRadius: BorderRadius.circular(17),
-
-        // =========================================================
-        // CARD CLICK
-        // =========================================================
-
+        borderRadius:
+            BorderRadius.circular(17),
         onTap: onTap,
 
         child: Container(
           decoration: BoxDecoration(
             color: card,
 
-            borderRadius: BorderRadius.circular(17),
+            borderRadius:
+                BorderRadius.circular(17),
 
             border: Border.all(
-              color: Colors.white.withOpacity(.09),
+              color:
+                  Colors.white.withOpacity(.09),
             ),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.28),
+                color:
+                    Colors.black.withOpacity(.28),
                 blurRadius: 10,
-                offset: const Offset(0, 5),
+                offset:
+                    const Offset(0, 5),
               ),
             ],
           ),
@@ -245,29 +257,41 @@ class HomeWidgets {
                     ClipRRect(
                       borderRadius:
                           const BorderRadius.only(
-                        topLeft: Radius.circular(17),
-                        topRight: Radius.circular(17),
+                        topLeft:
+                            Radius.circular(17),
+                        topRight:
+                            Radius.circular(17),
                       ),
 
                       child: Image.asset(
                         service['image'] ?? '',
 
-                        width: double.infinity,
-                        height: double.infinity,
+                        width:
+                            double.infinity,
+                        height:
+                            double.infinity,
 
                         fit: BoxFit.cover,
 
                         errorBuilder:
-                            (context, error, stackTrace) {
+                            (
+                              context,
+                              error,
+                              stackTrace,
+                            ) {
                           return Container(
                             color:
-                                const Color(0xFF151515),
+                                const Color(
+                              0xFF151515,
+                            ),
 
-                            child: const Center(
+                            child:
+                                const Center(
                               child: Icon(
                                 Icons
                                     .image_not_supported_outlined,
-                                color: Colors.white38,
+                                color:
+                                    Colors.white38,
                                 size: 34,
                               ),
                             ),
@@ -281,8 +305,10 @@ class HomeWidgets {
                     // =================================================
 
                     Positioned.fill(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
+                      child:
+                          DecoratedBox(
+                        decoration:
+                            BoxDecoration(
                           gradient:
                               LinearGradient(
                             begin:
@@ -292,7 +318,9 @@ class HomeWidgets {
                             colors: [
                               Colors.transparent,
                               Colors.black
-                                  .withOpacity(.35),
+                                  .withOpacity(
+                                .35,
+                              ),
                             ],
                           ),
                         ),
@@ -311,20 +339,30 @@ class HomeWidgets {
                         width: 31,
                         height: 31,
 
-                        decoration: BoxDecoration(
+                        decoration:
+                            BoxDecoration(
                           color: Colors.black
-                              .withOpacity(.60),
+                              .withOpacity(
+                            .60,
+                          ),
 
-                          shape: BoxShape.circle,
+                          shape:
+                              BoxShape.circle,
 
-                          border: Border.all(
-                            color: Colors.white
-                                .withOpacity(.12),
+                          border:
+                              Border.all(
+                            color: Colors
+                                .white
+                                .withOpacity(
+                              .12,
+                            ),
                           ),
                         ),
 
-                        child: const Icon(
-                          Icons.arrow_outward_rounded,
+                        child:
+                            const Icon(
+                          Icons
+                              .arrow_outward_rounded,
                           color: accent,
                           size: 15,
                         ),
@@ -352,48 +390,53 @@ class HomeWidgets {
                     Expanded(
                       child: Column(
                         crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                            CrossAxisAlignment
+                                .start,
 
                         children: [
-                          // =================================================
-                          // SERVICE TITLE
-                          // =================================================
-
                           Text(
-                            service['title'] ?? '',
+                            service['title'] ??
+                                '',
 
                             maxLines: 2,
 
                             overflow:
-                                TextOverflow.ellipsis,
+                                TextOverflow
+                                    .ellipsis,
 
                             style:
-                                GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 12.5,
+                                GoogleFonts
+                                    .poppins(
+                              color:
+                                  Colors.white,
+                              fontSize:
+                                  12.5,
                               fontWeight:
-                                  FontWeight.w600,
+                                  FontWeight
+                                      .w600,
                               height: 1.15,
                             ),
                           ),
 
-                          const SizedBox(height: 2),
-
-                          // =================================================
-                          // SERVICE SUBTITLE
-                          // =================================================
+                          const SizedBox(
+                            height: 2,
+                          ),
 
                           Text(
-                            service['subtitle'] ?? '',
+                            service['subtitle'] ??
+                                '',
 
                             maxLines: 1,
 
                             overflow:
-                                TextOverflow.ellipsis,
+                                TextOverflow
+                                    .ellipsis,
 
                             style:
-                                GoogleFonts.poppins(
-                              color: Colors.white54,
+                                GoogleFonts
+                                    .poppins(
+                              color:
+                                  Colors.white54,
                               fontSize: 9,
                             ),
                           ),
@@ -401,14 +444,13 @@ class HomeWidgets {
                       ),
                     ),
 
-                    const SizedBox(width: 5),
-
-                    // =================================================
-                    // ARROW
-                    // =================================================
+                    const SizedBox(
+                      width: 5,
+                    ),
 
                     const Icon(
-                      Icons.arrow_forward_rounded,
+                      Icons
+                          .arrow_forward_rounded,
                       color: accent,
                       size: 17,
                     ),
@@ -427,11 +469,15 @@ class HomeWidgets {
   // =========================================================
 
   static Widget portfolioGrid({
-    required List<Map<String, dynamic>> projects,
-    required Function(Map<String, dynamic>) onTap,
+    required List<Map<String, dynamic>>
+        projects,
+    required Function(
+      Map<String, dynamic>,
+    ) onTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
+      padding:
+          const EdgeInsets.symmetric(
         horizontal: 16,
       ),
       child: GridView.builder(
@@ -449,12 +495,13 @@ class HomeWidgets {
           childAspectRatio: .86,
         ),
 
-        itemBuilder: (context, index) {
-          final project = projects[index];
+        itemBuilder:
+            (context, index) {
+          final project =
+              projects[index];
 
           return portfolioCard(
             project: project,
-
             onTap: () {
               onTap(project);
             },
@@ -469,14 +516,16 @@ class HomeWidgets {
   // =========================================================
 
   static Widget portfolioCard({
-    required Map<String, dynamic> project,
+    required Map<String, dynamic>
+        project,
     required VoidCallback onTap,
   }) {
     return Material(
       color: Colors.transparent,
 
       child: InkWell(
-        borderRadius: BorderRadius.circular(17),
+        borderRadius:
+            BorderRadius.circular(17),
 
         onTap: onTap,
 
@@ -484,17 +533,21 @@ class HomeWidgets {
           decoration: BoxDecoration(
             color: card,
 
-            borderRadius: BorderRadius.circular(17),
+            borderRadius:
+                BorderRadius.circular(17),
 
             border: Border.all(
-              color: Colors.white.withOpacity(.09),
+              color:
+                  Colors.white.withOpacity(.09),
             ),
 
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.28),
+                color:
+                    Colors.black.withOpacity(.28),
                 blurRadius: 10,
-                offset: const Offset(0, 5),
+                offset:
+                    const Offset(0, 5),
               ),
             ],
           ),
@@ -522,16 +575,24 @@ class HomeWidgets {
                         fit: BoxFit.cover,
 
                         errorBuilder:
-                            (context, error, stackTrace) {
+                            (
+                              context,
+                              error,
+                              stackTrace,
+                            ) {
                           return Container(
                             color:
-                                const Color(0xFF151515),
+                                const Color(
+                              0xFF151515,
+                            ),
 
-                            child: const Center(
+                            child:
+                                const Center(
                               child: Icon(
                                 Icons
                                     .image_not_supported_outlined,
-                                color: Colors.white38,
+                                color:
+                                    Colors.white38,
                                 size: 35,
                               ),
                             ),
@@ -544,8 +605,10 @@ class HomeWidgets {
                       // =================================================
 
                       Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
+                        child:
+                            DecoratedBox(
+                          decoration:
+                              BoxDecoration(
                             gradient:
                                 LinearGradient(
                               begin:
@@ -555,7 +618,9 @@ class HomeWidgets {
                               colors: [
                                 Colors.transparent,
                                 Colors.black
-                                    .withOpacity(.72),
+                                    .withOpacity(
+                                  .72,
+                                ),
                               ],
                             ),
                           ),
@@ -583,20 +648,26 @@ class HomeWidgets {
                             color: accent,
 
                             borderRadius:
-                                BorderRadius.circular(
+                                BorderRadius
+                                    .circular(
                               20,
                             ),
                           ),
 
                           child: Text(
-                            project['category'] ?? '',
+                            project[
+                                    'category'] ??
+                                '',
 
                             style:
-                                GoogleFonts.poppins(
-                              color: Colors.black,
+                                GoogleFonts
+                                    .poppins(
+                              color:
+                                  Colors.black,
                               fontSize: 9,
                               fontWeight:
-                                  FontWeight.w700,
+                                  FontWeight
+                                      .w700,
                             ),
                           ),
                         ),
@@ -617,19 +688,29 @@ class HomeWidgets {
                           decoration:
                               BoxDecoration(
                             color: Colors.black
-                                .withOpacity(.60),
+                                .withOpacity(
+                              .60,
+                            ),
 
-                            shape: BoxShape.circle,
+                            shape:
+                                BoxShape.circle,
 
-                            border: Border.all(
-                              color: Colors.white
-                                  .withOpacity(.15),
+                            border:
+                                Border.all(
+                              color: Colors
+                                  .white
+                                  .withOpacity(
+                                .15,
+                              ),
                             ),
                           ),
 
-                          child: const Icon(
-                            Icons.visibility_rounded,
-                            color: Colors.white,
+                          child:
+                              const Icon(
+                            Icons
+                                .visibility_rounded,
+                            color:
+                                Colors.white,
                             size: 15,
                           ),
                         ),
@@ -645,19 +726,24 @@ class HomeWidgets {
                         bottom: 10,
 
                         child: Text(
-                          project['title'] ?? '',
+                          project['title'] ??
+                              '',
 
                           maxLines: 2,
 
                           overflow:
-                              TextOverflow.ellipsis,
+                              TextOverflow
+                                  .ellipsis,
 
                           style:
-                              GoogleFonts.poppins(
-                            color: Colors.white,
+                              GoogleFonts
+                                  .poppins(
+                            color:
+                                Colors.white,
                             fontSize: 12,
                             fontWeight:
-                                FontWeight.w700,
+                                FontWeight
+                                    .w700,
                             height: 1.25,
                           ),
                         ),
@@ -672,7 +758,8 @@ class HomeWidgets {
 
                 Padding(
                   padding:
-                      const EdgeInsets.fromLTRB(
+                      const EdgeInsets
+                          .fromLTRB(
                     10,
                     8,
                     8,
@@ -686,17 +773,21 @@ class HomeWidgets {
                           'View Project',
 
                           style:
-                              GoogleFonts.poppins(
-                            color: Colors.white54,
+                              GoogleFonts
+                                  .poppins(
+                            color:
+                                Colors.white54,
                             fontSize: 9,
                             fontWeight:
-                                FontWeight.w500,
+                                FontWeight
+                                    .w500,
                           ),
                         ),
                       ),
 
                       const Icon(
-                        Icons.arrow_forward_rounded,
+                        Icons
+                            .arrow_forward_rounded,
                         color: accent,
                         size: 16,
                       ),
@@ -717,7 +808,8 @@ class HomeWidgets {
 
   static Widget portfolioIntro() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
+      padding:
+          const EdgeInsets.fromLTRB(
         16,
         8,
         16,
@@ -727,16 +819,19 @@ class HomeWidgets {
       child: Container(
         width: double.infinity,
 
-        padding: const EdgeInsets.all(13),
+        padding:
+            const EdgeInsets.all(13),
 
         decoration: BoxDecoration(
-          color: accent.withOpacity(.045),
+          color:
+              accent.withOpacity(.045),
 
           borderRadius:
               BorderRadius.circular(14),
 
           border: Border.all(
-            color: accent.withOpacity(.10),
+            color:
+                accent.withOpacity(.10),
           ),
         ),
 
@@ -746,13 +841,17 @@ class HomeWidgets {
               width: 36,
               height: 36,
 
-              decoration: BoxDecoration(
-                color: accent.withOpacity(.10),
-                shape: BoxShape.circle,
+              decoration:
+                  BoxDecoration(
+                color:
+                    accent.withOpacity(.10),
+                shape:
+                    BoxShape.circle,
               ),
 
               child: const Icon(
-                Icons.auto_awesome_rounded,
+                Icons
+                    .auto_awesome_rounded,
                 color: accent,
                 size: 19,
               ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,11 +37,11 @@ class _GetStartedScreenState extends State<GetStartedScreen>
 
 
 
-  static const List<String> _images = [
-    "images/assets/gallery5.png",
-    "images/assets/gallery8.png",
-    "images/assets/gallery4.png",
-  ];
+      static const List<String> _images = [
+        "images/assets/Get_Started_1.jpg",
+        "images/assets/GetStareted2.jpg",
+        "images/assets/GetStareted3.jpg",
+      ];
 
 
   static const List<String> _titles = [
@@ -474,64 +475,7 @@ Widget _buildFullScreenBackground() {
             ),
           ),
 
-          // ------------------------------------------------------
-          // EXPLORE
-          // ------------------------------------------------------
-
-          // TextButton(
-          //   onPressed: () {
-          //     // Explore action
-          //   },
-
-          //   style: TextButton.styleFrom(
-          //     padding: const EdgeInsets.symmetric(
-          //       horizontal: 4,
-          //       vertical: 6,
-          //     ),
-          //   ),
-
-          //   child: Container(
-          //     padding: const EdgeInsets.symmetric(
-          //       horizontal: 11,
-          //       vertical: 7,
-          //     ),
-
-          //     decoration: BoxDecoration(
-          //       color:
-          //           Colors.black.withOpacity(0.25),
-
-          //       borderRadius:
-          //           BorderRadius.circular(20),
-
-          //       border: Border.all(
-          //         color:
-          //             Colors.white.withOpacity(0.12),
-          //       ),
-          //     ),
-
-          //     child: const Row(
-          //       children: [
-          //         Text(
-          //           "Explore",
-          //           style: TextStyle(
-          //             color: Colors.white,
-          //             fontSize: 13,
-          //             fontWeight:
-          //                 FontWeight.w500,
-          //           ),
-          //         ),
-
-          //         SizedBox(width: 5),
-
-          //         Icon(
-          //           Icons.arrow_forward_ios_rounded,
-          //           color: accent,
-          //           size: 11,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+         
         ],
       ),
     );
@@ -587,7 +531,7 @@ Widget _buildFullScreenBackground() {
               const SizedBox(width: 9),
 
               const Text(
-                "ALRMUN STUDIO",
+                "ALRMAN STUDIO",
 
                 style: TextStyle(
                   color: Colors.white,

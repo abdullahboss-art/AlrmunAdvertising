@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:adverting_app/User/Estimated.dart';
 import 'package:adverting_app/User/HomeData.dart';
@@ -22,9 +23,12 @@ class _HomeScreenState extends State<HomeScreen> {
   // CAROUSEL
   // =========================================================
 
-  final PageController _carouselController = PageController();
+  final PageController _carouselController =
+      PageController();
 
   int _currentSlide = 0;
+
+  Timer? _carouselTimer;
 
   final List<Map<String, String>> _carouselItems = [
     {
@@ -67,9 +71,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    Future.delayed(
+    _carouselTimer = Timer.periodic(
       const Duration(seconds: 4),
-      _autoSlide,
+      (_) {
+        _autoSlide();
+      },
     );
   }
 
@@ -81,10 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
 
     if (!_carouselController.hasClients) {
-      Future.delayed(
-        const Duration(seconds: 4),
-        _autoSlide,
-      );
       return;
     }
 
@@ -99,10 +101,27 @@ class _HomeScreenState extends State<HomeScreen> {
       duration: const Duration(milliseconds: 700),
       curve: Curves.easeInOut,
     );
+  }
 
-    Future.delayed(
-      const Duration(seconds: 4),
-      _autoSlide,
+  // =========================================================
+  // NEXT SLIDE
+  // =========================================================
+
+  void _nextSlide() {
+    if (!_carouselController.hasClients) {
+      return;
+    }
+
+    int nextPage = _currentSlide + 1;
+
+    if (nextPage >= _carouselItems.length) {
+      nextPage = 0;
+    }
+
+    _carouselController.animateToPage(
+      nextPage,
+      duration: const Duration(milliseconds: 600),
+      curve: Curves.easeInOut,
     );
   }
 
@@ -112,12 +131,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    _carouselTimer?.cancel();
     _carouselController.dispose();
     super.dispose();
   }
 
   // =========================================================
-  // CAROUSEL WIDGET
+  // CAROUSEL
   // =========================================================
 
   Widget _buildCarousel() {
@@ -125,245 +145,373 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         SizedBox(
           height: 225,
-          child: PageView.builder(
-            controller: _carouselController,
-            itemCount: _carouselItems.length,
-            onPageChanged: (index) {
-              setState(() {
-                _currentSlide = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              final item = _carouselItems[index];
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
+          child: Stack(
+            children: [
 
-                      // =================================================
-                      // BLURRED / FILLED BACKGROUND
-                      // =================================================
+              // =================================================
+              // PAGE VIEW
+              // =================================================
 
-                      Image.asset(
-                        item['image']!,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
-                      ),
+              PageView.builder(
+                controller: _carouselController,
 
-                      // Dark transparent layer
-                      Container(
-                        color: Colors.black.withOpacity(.35),
-                      ),
+                itemCount:
+                    _carouselItems.length,
 
-                      // =================================================
-                      // FULL IMAGE - NO CROP
-                      // =================================================
+                onPageChanged: (index) {
+                  if (!mounted) return;
 
-                      Center(
-                        child: Image.asset(
-                          item['image']!,
-                          fit: BoxFit.contain,
-                          filterQuality: FilterQuality.high,
-                        ),
-                      ),
+                  setState(() {
+                    _currentSlide = index;
+                  });
+                },
 
-                      // =================================================
-                      // DARK GRADIENT
-                      // =================================================
+                itemBuilder: (context, index) {
+                  final item =
+                      _carouselItems[index];
 
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(.20),
-                                Colors.black.withOpacity(.92),
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(22),
+
+                      child: Stack(
+                        fit: StackFit.expand,
+
+                        children: [
+
+                          // =============================================
+                          // BACKGROUND IMAGE
+                          // =============================================
+
+                          Image.asset(
+                            item['image']!,
+                            fit: BoxFit.cover,
+                            filterQuality:
+                                FilterQuality.high,
+                          ),
+
+                          // =============================================
+                          // DARK OVERLAY
+                          // =============================================
+
+                          Container(
+                            color:
+                                Colors.black
+                                    .withOpacity(.35),
+                          ),
+
+                          // =============================================
+                          // FULL IMAGE
+                          // =============================================
+
+                          Center(
+                            child: Image.asset(
+                              item['image']!,
+                              fit: BoxFit.contain,
+                              filterQuality:
+                                  FilterQuality.high,
+                            ),
+                          ),
+
+                          // =============================================
+                          // DARK GRADIENT
+                          // =============================================
+
+                          Positioned.fill(
+                            child: Container(
+                              decoration:
+                                  BoxDecoration(
+                                gradient:
+                                    LinearGradient(
+                                  begin:
+                                      Alignment
+                                          .topCenter,
+                                  end:
+                                      Alignment
+                                          .bottomCenter,
+                                  colors: [
+                                    Colors
+                                        .transparent,
+                                    Colors.black
+                                        .withOpacity(
+                                      .20,
+                                    ),
+                                    Colors.black
+                                        .withOpacity(
+                                      .92,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // =============================================
+                          // CYAN GLOW
+                          // =============================================
+
+                          Positioned(
+                            right: -50,
+                            top: -50,
+
+                            child: Container(
+                              width: 150,
+                              height: 150,
+
+                              decoration:
+                                  BoxDecoration(
+                                shape:
+                                    BoxShape.circle,
+                                color:
+                                    const Color(
+                                  0xFF36B6BD,
+                                ).withOpacity(.14),
+                              ),
+                            ),
+                          ),
+
+                          // =============================================
+                          // CONTENT
+                          // =============================================
+
+                          Positioned(
+                            left: 20,
+                            right: 65,
+                            bottom: 18,
+
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+
+                              children: [
+
+                                // LABEL
+                                Container(
+                                  padding:
+                                      const EdgeInsets
+                                          .symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+
+                                  decoration:
+                                      BoxDecoration(
+                                    color:
+                                        const Color(
+                                      0xFF36B6BD,
+                                    ).withOpacity(.18),
+
+                                    borderRadius:
+                                        BorderRadius
+                                            .circular(
+                                      20,
+                                    ),
+
+                                    border:
+                                        Border.all(
+                                      color:
+                                          const Color(
+                                        0xFF36B6BD,
+                                      ).withOpacity(.40),
+                                    ),
+                                  ),
+
+                                  child: Text(
+                                    'ALRMAN ADVERTISING',
+
+                                    style:
+                                        GoogleFonts
+                                            .poppins(
+                                      color:
+                                          const Color(
+                                        0xFF7DE8ED,
+                                      ),
+                                      fontSize: 8,
+                                      fontWeight:
+                                          FontWeight.w700,
+                                      letterSpacing:
+                                          .8,
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  height: 7,
+                                ),
+
+                                // TITLE
+                                Text(
+                                  item['title']!,
+
+                                  maxLines: 1,
+
+                                  overflow:
+                                      TextOverflow
+                                          .ellipsis,
+
+                                  style:
+                                      GoogleFonts
+                                          .poppins(
+                                    color:
+                                        Colors.white,
+                                    fontSize: 21,
+                                    fontWeight:
+                                        FontWeight.w800,
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  height: 3,
+                                ),
+
+                                // DESCRIPTION
+                                Text(
+                                  item['description']!,
+
+                                  maxLines: 2,
+
+                                  overflow:
+                                      TextOverflow
+                                          .ellipsis,
+
+                                  style:
+                                      GoogleFonts
+                                          .poppins(
+                                    color:
+                                        Colors.white70,
+                                    fontSize: 10,
+                                    height: 1.35,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
+                    ),
+                  );
+                },
+              ),
 
-                      // =================================================
-                      // CYAN GLOW
-                      // =================================================
+              // =================================================
+              // CLICKABLE CAROUSEL ARROW
+              // =================================================
 
-                      Positioned(
-                        right: -50,
-                        top: -50,
-                        child: Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(
+              Positioned(
+                right: 22,
+                bottom: 18,
+
+                child: Material(
+                  color: Colors.transparent,
+
+                  child: InkWell(
+                    onTap: _nextSlide,
+
+                    borderRadius:
+                        BorderRadius.circular(30),
+
+                    child: Container(
+                      width: 52,
+                      height: 52,
+
+                      decoration:
+                          BoxDecoration(
+                        color:
+                            const Color(
+                          0xFF36B6BD,
+                        ),
+
+                        shape:
+                            BoxShape.circle,
+
+                        border:
+                            Border.all(
+                          color:
+                              Colors.white
+                                  .withOpacity(.30),
+                          width: 1,
+                        ),
+
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                const Color(
                               0xFF36B6BD,
-                            ).withOpacity(.14),
+                            ).withOpacity(.50),
+
+                            blurRadius: 18,
+
+                            spreadRadius: 2,
                           ),
-                        ),
+                        ],
                       ),
 
-                      // =================================================
-                      // CONTENT
-                      // =================================================
+                      child: const Icon(
+                        Icons
+                            .arrow_forward_rounded,
 
-                      Positioned(
-                        left: 20,
-                        right: 65,
-                        bottom: 18,
-                        child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                          children: [
+                        color:
+                            Colors.black,
 
-                            // =================================================
-                            // LABEL
-                            // =================================================
-
-                            Container(
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(
-                                  0xFF36B6BD,
-                                ).withOpacity(.18),
-                                borderRadius:
-                                    BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: const Color(
-                                    0xFF36B6BD,
-                                  ).withOpacity(.40),
-                                ),
-                              ),
-                              child: Text(
-                                'ALRMAN ADVERTISING',
-                                style: GoogleFonts.poppins(
-                                  color: const Color(
-                                    0xFF7DE8ED,
-                                  ),
-                                  fontSize: 8,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: .8,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 7),
-
-                            // =================================================
-                            // TITLE
-                            // =================================================
-
-                            Text(
-                              item['title']!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 21,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-
-                            const SizedBox(height: 3),
-
-                            // =================================================
-                            // DESCRIPTION
-                            // =================================================
-
-                            Text(
-                              item['description']!,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white70,
-                                fontSize: 10,
-                                height: 1.35,
-                              ),
-                            ),
-                          ],
-                        ),
+                        size: 26,
                       ),
-
-                      // =================================================
-                      // ARROW BUTTON
-                      // =================================================
-
-                      Positioned(
-                        right: 16,
-                        bottom: 20,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: const Color(
-                              0xFF36B6BD,
-                            ),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(
-                                  0xFF36B6BD,
-                                ).withOpacity(.35),
-                                blurRadius: 12,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.arrow_forward_rounded,
-                            color: Colors.black,
-                            size: 21,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         ),
 
         const SizedBox(height: 12),
 
-        // =========================================================
+        // =================================================
         // INDICATOR DOTS
-        // =========================================================
+        // =================================================
 
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment:
+              MainAxisAlignment.center,
+
           children: List.generate(
             _carouselItems.length,
+
             (index) {
               final bool isActive =
                   index == _currentSlide;
 
               return AnimatedContainer(
                 duration:
-                    const Duration(milliseconds: 300),
+                    const Duration(
+                  milliseconds: 300,
+                ),
+
                 margin:
                     const EdgeInsets.symmetric(
                   horizontal: 3,
                 ),
-                width: isActive ? 22 : 6,
+
+                width:
+                    isActive ? 22 : 6,
+
                 height: 6,
-                decoration: BoxDecoration(
+
+                decoration:
+                    BoxDecoration(
                   color: isActive
-                      ? const Color(0xFF36B6BD)
+                      ? const Color(
+                          0xFF36B6BD,
+                        )
                       : Colors.white24,
+
                   borderRadius:
                       BorderRadius.circular(10),
                 ),
@@ -384,41 +532,60 @@ class _HomeScreenState extends State<HomeScreen> {
 
     showDialog(
       context: context,
+
       builder: (_) => AlertDialog(
-        backgroundColor: const Color(0xFF07131B),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+        backgroundColor:
+            const Color(0xFF07131B),
+
+        shape:
+            RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(18),
         ),
+
         title: Text(
           isLoggedIn
               ? "Profile"
               : "You're not signed in",
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
+
+          style:
+              GoogleFonts.poppins(
+            color:
+                Colors.white,
+            fontWeight:
+                FontWeight.w600,
           ),
         ),
+
         content: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize:
+              MainAxisSize.min,
+
           crossAxisAlignment:
               CrossAxisAlignment.start,
+
           children: [
 
-            // =================================================
+            // =============================================
             // PROFILE IMAGE
-            // =================================================
+            // =============================================
 
             Center(
               child: CircleAvatar(
                 radius: 35,
+
                 backgroundColor:
                     Colors.grey.shade800,
+
                 backgroundImage:
                     (isLoggedIn &&
                             user.photoURL != null &&
                             user.photoURL!.isNotEmpty)
-                        ? NetworkImage(user.photoURL!)
+                        ? NetworkImage(
+                            user.photoURL!,
+                          )
                         : null,
+
                 child:
                     (!isLoggedIn ||
                             user.photoURL == null ||
@@ -432,76 +599,111 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
 
-            // =================================================
+            // =============================================
             // LOGGED IN
-            // =================================================
+            // =============================================
 
             if (isLoggedIn) ...[
               Text(
                 "Name",
-                style: GoogleFonts.poppins(
-                  color: Colors.white54,
+
+                style:
+                    GoogleFonts.poppins(
+                  color:
+                      Colors.white54,
                   fontSize: 11,
                 ),
               ),
 
-              const SizedBox(height: 3),
+              const SizedBox(
+                height: 3,
+              ),
 
               Text(
-                user.displayName ?? "No Name",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
+                user.displayName ??
+                    "No Name",
+
+                style:
+                    GoogleFonts.poppins(
+                  color:
+                      Colors.white,
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight:
+                      FontWeight.w500,
                 ),
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(
+                height: 12,
+              ),
 
               Text(
                 "Email",
-                style: GoogleFonts.poppins(
-                  color: Colors.white54,
+
+                style:
+                    GoogleFonts.poppins(
+                  color:
+                      Colors.white54,
                   fontSize: 11,
                 ),
               ),
 
-              const SizedBox(height: 3),
+              const SizedBox(
+                height: 3,
+              ),
 
               Text(
-                user.email ?? "Not Available",
-                style: GoogleFonts.poppins(
-                  color: Colors.white70,
+                user.email ??
+                    "Not Available",
+
+                style:
+                    GoogleFonts.poppins(
+                  color:
+                      Colors.white70,
                   fontSize: 13,
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(
+                height: 20,
+              ),
 
-              // =================================================
+              // =============================================
               // LOGOUT
-              // =================================================
+              // =============================================
 
               SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
+                width:
+                    double.infinity,
+
+                child:
+                    ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor:
+                        Colors.red,
+
                     padding:
                         const EdgeInsets.symmetric(
                       vertical: 12,
                     ),
+
                     shape:
                         RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(12),
+                          BorderRadius.circular(
+                        12,
+                      ),
                     ),
                   ),
+
                   onPressed: () async {
-                    await FirebaseAuth.instance
+                    await FirebaseAuth
+                        .instance
                         .signOut();
 
                     if (!context.mounted) {
@@ -510,17 +712,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     Navigator.pushAndRemoveUntil(
                       context,
+
                       MaterialPageRoute(
                         builder: (_) =>
                             const LoginPage(),
                       ),
+
                       (route) => false,
                     );
                   },
-                  child: Text(
+
+                  child:
+                      Text(
                     "Logout",
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
+
+                    style:
+                        GoogleFonts.poppins(
+                      color:
+                          Colors.white,
+
                       fontWeight:
                           FontWeight.w600,
                     ),
@@ -529,56 +739,79 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ]
 
-            // =================================================
+            // =============================================
             // NOT LOGGED IN
-            // =================================================
+            // =============================================
 
             else ...[
               Text(
                 "Login to see your profile, orders and more.",
-                style: GoogleFonts.poppins(
-                  color: Colors.white70,
+
+                style:
+                    GoogleFonts.poppins(
+                  color:
+                      Colors.white70,
                   fontSize: 13,
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(
+                height: 20,
+              ),
 
-              // =================================================
+              // =============================================
               // LOGIN
-              // =================================================
+              // =============================================
 
               SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
+                width:
+                    double.infinity,
+
+                child:
+                    ElevatedButton(
                   style:
                       ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
+                    backgroundColor:
+                        Colors.amber,
+
                     padding:
                         const EdgeInsets.symmetric(
                       vertical: 12,
                     ),
+
                     shape:
                         RoundedRectangleBorder(
                       borderRadius:
-                          BorderRadius.circular(12),
+                          BorderRadius.circular(
+                        12,
+                      ),
                     ),
                   ),
+
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(
+                      context,
+                    );
 
                     Navigator.push(
                       context,
+
                       MaterialPageRoute(
                         builder: (_) =>
                             const LoginPage(),
                       ),
                     );
                   },
-                  child: Text(
+
+                  child:
+                      Text(
                     "Login",
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
+
+                    style:
+                        GoogleFonts.poppins(
+                      color:
+                          Colors.black,
+
                       fontWeight:
                           FontWeight.w600,
                     ),
@@ -599,6 +832,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openEstimate() {
     Navigator.push(
       context,
+
       MaterialPageRoute(
         builder: (_) =>
             const AdvertisingEstimatePage(),
@@ -622,9 +856,235 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Navigator.push(
       context,
+
       MaterialPageRoute(
-        builder: (_) => ServiceDetail(
+        builder: (_) =>
+            ServiceDetail(
           service: service,
+        ),
+      ),
+    );
+  }
+
+  // =========================================================
+  // BOTTOM NAVIGATION
+  // =========================================================
+
+  Widget _buildBottomNavigationBar() {
+    return Container(
+      decoration:
+          BoxDecoration(
+        color:
+            const Color(0xFF07131B),
+
+        border:
+            Border(
+          top:
+              BorderSide(
+            color:
+                Colors.white
+                    .withOpacity(.06),
+
+            width: 1,
+          ),
+        ),
+
+        boxShadow: [
+          BoxShadow(
+            color:
+                Colors.black
+                    .withOpacity(.30),
+
+            blurRadius:
+                15,
+
+            offset:
+                const Offset(
+              0,
+              -4,
+            ),
+          ),
+        ],
+      ),
+
+      child:
+          SafeArea(
+        top: false,
+
+        child:
+            SizedBox(
+          height: 65,
+
+          child:
+              Row(
+            mainAxisAlignment:
+                MainAxisAlignment
+                    .spaceAround,
+
+            children: [
+
+              // =============================================
+              // HOME
+              // =============================================
+
+              _bottomNavItem(
+                icon:
+                    Icons.home_rounded,
+
+                title:
+                    "Home",
+
+                selected:
+                    true,
+
+                onTap: () {
+                  // Already on Home
+                },
+              ),
+
+              // =============================================
+              // SERVICES
+              // =============================================
+
+              _bottomNavItem(
+                icon:
+                    Icons.grid_view_rounded,
+
+                title:
+                    "Services",
+
+                selected:
+                    false,
+
+                onTap: () {
+                  setState(() {
+                    showAllServices = true;
+                  });
+                },
+              ),
+
+              // =============================================
+              // PORTFOLIO
+              // =============================================
+
+              _bottomNavItem(
+                icon:
+                    Icons.photo_library_rounded,
+
+                title:
+                    "Portfolio",
+
+                selected:
+                    false,
+
+                onTap: () {
+                  // Portfolio page yahan add kar sakte hain
+                },
+              ),
+
+              // =============================================
+              // PROFILE
+              // =============================================
+
+              _bottomNavItem(
+                icon:
+                    Icons.person_rounded,
+
+                title:
+                    "Profile",
+
+                selected:
+                    false,
+
+                onTap: () {
+                  final User? user =
+                      FirebaseAuth
+                          .instance
+                          .currentUser;
+
+                  _showProfileDialog(
+                    user,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =========================================================
+  // BOTTOM NAV ITEM
+  // =========================================================
+
+  Widget _bottomNavItem({
+    required IconData icon,
+    required String title,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap:
+          onTap,
+
+      borderRadius:
+          BorderRadius.circular(
+        15,
+      ),
+
+      child:
+          SizedBox(
+        width: 70,
+        height: 60,
+
+        child:
+            Column(
+          mainAxisAlignment:
+              MainAxisAlignment
+                  .center,
+
+          children: [
+
+            Icon(
+              icon,
+
+              size: 23,
+
+              color:
+                  selected
+                      ? const Color(
+                          0xFF36B6BD,
+                        )
+                      : Colors.white54,
+            ),
+
+            const SizedBox(
+              height: 3,
+            ),
+
+            Text(
+              title,
+
+              style:
+                  GoogleFonts.poppins(
+                color:
+                    selected
+                        ? const Color(
+                            0xFF36B6BD,
+                          )
+                        : Colors.white54,
+
+                fontSize:
+                    10,
+
+                fontWeight:
+                    selected
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -635,35 +1095,47 @@ class _HomeScreenState extends State<HomeScreen> {
   // =========================================================
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(
+    BuildContext context,
+  ) {
     // =========================================================
     // SERVICES DISPLAY LOGIC
     // =========================================================
 
     final List<Map<String, String>>
         displayedServices =
-        showAllServices
-            ? HomeData.services
-            : HomeData.services.sublist(
-                0,
-                HomeData.services.length > 6
-                    ? 6
-                    : HomeData.services.length,
-              );
+            showAllServices
+                ? HomeData.services
+                : HomeData.services.sublist(
+                    0,
+                    HomeData.services.length >
+                            6
+                        ? 6
+                        : HomeData
+                            .services
+                            .length,
+                  );
 
     return Scaffold(
       backgroundColor:
           HomeWidgets.background,
 
-      body: SafeArea(
-        child: SingleChildScrollView(
+      // =======================================================
+      // BODY
+      // =======================================================
+
+      body:
+          SafeArea(
+        child:
+            SingleChildScrollView(
           physics:
               const BouncingScrollPhysics(),
 
-          child: Column(
+          child:
+              Column(
             crossAxisAlignment:
-                CrossAxisAlignment.start,
+                CrossAxisAlignment
+                    .start,
 
             children: [
 
@@ -673,83 +1145,118 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(
+                    const EdgeInsets
+                        .symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
-                child: Row(
+
+                child:
+                    Row(
                   children: [
 
-                    // =================================================
+                    // =============================================
                     // LOGO
-                    // =================================================
+                    // =============================================
 
                     Image.asset(
                       'images/assets/Alrmun_logo.png',
-                      height: 64,
-                      fit: BoxFit.contain,
+
+                      height:
+                          64,
+
+                      fit:
+                          BoxFit.contain,
                     ),
 
                     const Spacer(),
 
-                    // =================================================
+                    // =============================================
                     // PROFILE
-                    // =================================================
+                    // =============================================
 
                     StreamBuilder<User?>(
-                      stream: FirebaseAuth.instance
-                          .authStateChanges(),
-                      builder:
-                          (context, snapshot) {
+                      stream:
+                          FirebaseAuth
+                              .instance
+                              .authStateChanges(),
 
+                      builder:
+                          (
+                        context,
+                        snapshot,
+                      ) {
                         final User? user =
                             snapshot.data;
 
-                        final bool isLoggedIn =
+                        final bool
+                            isLoggedIn =
                             user != null;
 
                         return GestureDetector(
-                          onTap: () =>
-                              _showProfileDialog(
+                          onTap:
+                              () =>
+                                  _showProfileDialog(
                             user,
                           ),
-                          child: Container(
+
+                          child:
+                              Container(
                             decoration:
                                 BoxDecoration(
                               shape:
-                                  BoxShape.circle,
+                                  BoxShape
+                                      .circle,
+
                               border:
                                   Border.all(
-                                color: HomeWidgets
-                                    .accent
-                                    .withOpacity(.35),
-                                width: 1,
+                                color:
+                                    HomeWidgets
+                                        .accent
+                                        .withOpacity(
+                                  .35,
+                                ),
+
+                                width:
+                                    1,
                               ),
                             ),
-                            child: CircleAvatar(
-                              radius: 20,
+
+                            child:
+                                CircleAvatar(
+                              radius:
+                                  20,
+
                               backgroundColor:
                                   Colors
                                       .grey
                                       .shade800,
+
                               backgroundImage:
-                                  (isLoggedIn &&
-                                          user.photoURL !=
-                                              null &&
-                                          user.photoURL!
-                                              .isNotEmpty)
+                                  (
+                                        isLoggedIn &&
+                                        user.photoURL !=
+                                            null &&
+                                        user.photoURL!
+                                            .isNotEmpty
+                                    )
                                       ? NetworkImage(
                                           user.photoURL!,
                                         )
                                       : null,
+
                               child:
-                                  (!isLoggedIn ||
-                                          user.photoURL ==
-                                              null ||
-                                          user.photoURL!
-                                              .isEmpty)
+                                  (
+                                        !isLoggedIn ||
+                                        user.photoURL ==
+                                            null ||
+                                        user.photoURL!
+                                            .isEmpty
+                                    )
                                       ? const Icon(
-                                          Icons.person,
+                                          Icons
+                                              .person,
+
                                           color:
                                               Colors.white,
                                         )
@@ -763,7 +1270,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(
+                height: 8,
+              ),
 
               // =================================================
               // BRANDING
@@ -771,68 +1280,111 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(
+                    const EdgeInsets
+                        .symmetric(
                   horizontal: 16,
                 ),
-                child: Column(
+
+                child:
+                    Column(
                   crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      CrossAxisAlignment
+                          .start,
+
                   children: [
 
                     Text(
                       "ALRMAN ADVERTISING",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 24,
+
+                      style:
+                          GoogleFonts.poppins(
+                        color:
+                            Colors.white,
+
+                        fontSize:
+                            24,
+
                         fontWeight:
                             FontWeight.w800,
-                        letterSpacing: .8,
+
+                        letterSpacing:
+                            .8,
                       ),
                     ),
 
-                    const SizedBox(height: 2),
+                    const SizedBox(
+                      height: 2,
+                    ),
 
                     Text(
                       "Creative Ideas. Powerful Advertising.",
-                      style: GoogleFonts.poppins(
+
+                      style:
+                          GoogleFonts.poppins(
                         color:
-                            HomeWidgets.accent,
-                        fontSize: 12,
+                            HomeWidgets
+                                .accent,
+
+                        fontSize:
+                            12,
+
                         fontWeight:
                             FontWeight.w500,
-                        letterSpacing: .3,
+
+                        letterSpacing:
+                            .3,
                       ),
                     ),
 
-                    const SizedBox(height: 18),
+                    const SizedBox(
+                      height: 18,
+                    ),
 
-                    // =================================================
+                    // =============================================
                     // ESTIMATE BUTTON
-                    // =================================================
+                    // =============================================
 
                     SizedBox(
-                      width: double.infinity,
-                      height: 54,
-                      child: Container(
+                      width:
+                          double.infinity,
+
+                      height:
+                          54,
+
+                      child:
+                          Container(
                         decoration:
                             BoxDecoration(
                           gradient:
                               const LinearGradient(
                             colors: [
-                              Color(0xFF16C8D8),
-                              Color(0xFF0EA5B7),
+                              Color(
+                                0xFF16C8D8,
+                              ),
+                              Color(
+                                0xFF0EA5B7,
+                              ),
                             ],
                           ),
+
                           borderRadius:
-                              BorderRadius.circular(
+                              BorderRadius
+                                  .circular(
                             15,
                           ),
+
                           boxShadow: [
                             BoxShadow(
-                              color: HomeWidgets
-                                  .accent
-                                  .withOpacity(.20),
-                              blurRadius: 14,
+                              color:
+                                  HomeWidgets
+                                      .accent
+                                      .withOpacity(
+                                .20,
+                              ),
+
+                              blurRadius:
+                                  14,
+
                               offset:
                                   const Offset(
                                 0,
@@ -841,55 +1393,78 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
+
+                        child:
+                            Material(
+                          color:
+                              Colors.transparent,
+
+                          child:
+                              InkWell(
                             onTap:
                                 _openEstimate,
+
                             borderRadius:
-                                BorderRadius.circular(
+                                BorderRadius
+                                    .circular(
                               15,
                             ),
-                            child: Row(
+
+                            child:
+                                Row(
                               mainAxisAlignment:
                                   MainAxisAlignment
                                       .center,
+
                               children: [
 
                                 const Icon(
                                   Icons
                                       .request_quote_rounded,
+
                                   color:
                                       Colors.black,
-                                  size: 21,
+
+                                  size:
+                                      21,
                                 ),
 
                                 const SizedBox(
-                                    width: 9),
+                                  width:
+                                      9,
+                                ),
 
                                 Text(
                                   "Get Your Free Estimate",
+
                                   style:
                                       GoogleFonts
                                           .poppins(
                                     color:
                                         Colors.black,
-                                    fontSize: 15,
+
+                                    fontSize:
+                                        15,
+
                                     fontWeight:
-                                        FontWeight
-                                            .w700,
+                                        FontWeight.w700,
                                   ),
                                 ),
 
                                 const SizedBox(
-                                    width: 8),
+                                  width:
+                                      8,
+                                ),
 
                                 const Icon(
                                   Icons
                                       .arrow_forward_rounded,
+
                                   color:
                                       Colors.black,
-                                  size: 20,
+
+                                  size:
+                                      20,
                                 ),
                               ],
                             ),
@@ -905,27 +1480,37 @@ class _HomeScreenState extends State<HomeScreen> {
               // CAROUSEL
               // =================================================
 
-              const SizedBox(height: 24),
+              const SizedBox(
+                height: 24,
+              ),
 
               _buildCarousel(),
 
-              const SizedBox(height: 12),
+              const SizedBox(
+                height: 12,
+              ),
 
               // =================================================
               // SERVICES HEADER
               // =================================================
 
               HomeWidgets.sectionHeader(
-                title: "Services",
+                title:
+                    "Services",
+
                 subtitle:
                     "Everything your brand needs",
+
                 buttonText:
                     showAllServices
                         ? "Show Less"
                         : "See All",
+
                 showLess:
                     showAllServices,
-                onButtonTap: () {
+
+                onButtonTap:
+                    () {
                   setState(() {
                     showAllServices =
                         !showAllServices;
@@ -933,7 +1518,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(
+                height: 14,
+              ),
 
               // =================================================
               // SERVICES GRID
@@ -942,16 +1529,25 @@ class _HomeScreenState extends State<HomeScreen> {
               HomeWidgets.servicesGrid(
                 services:
                     displayedServices,
+
                 onTap:
                     _openServiceDetail,
               ),
 
-              const SizedBox(height: 35),
+              const SizedBox(
+                height: 35,
+              ),
             ],
           ),
         ),
       ),
+
+      // =========================================================
+      // BOTTOM NAVIGATION BAR
+      // =========================================================
+
+      // bottomNavigationBar:
+      //     _buildBottomNavigationBar(),
     );
   }
 }
-

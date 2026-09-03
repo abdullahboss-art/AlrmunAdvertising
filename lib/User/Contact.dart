@@ -294,37 +294,9 @@ class _ContactPageState extends State<ContactPage> {
               Row(
   children: [
 
-    Container(
-      width: 46,
-      height: 46,
+  
 
-      decoration: BoxDecoration(
-        color: const Color(0xFF141922),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.08),
-        ),
-      ),
 
-      child: IconButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
-            ),
-          );
-        },
-
-        icon: const Icon(
-          Icons.arrow_back_ios_new_rounded,
-          color: gold,
-          size: 19,
-        ),
-      ),
-    ),
-
-    const Spacer(),
 
     Image.asset(
       'images/assets/Alrmun_logo.png',
