@@ -116,35 +116,30 @@ class ContactWidgets {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(11),
               borderSide: BorderSide(
-                color: errorText != null
-                    ? Colors.redAccent
-                    : Colors.white.withOpacity(0.07),
+              color: errorText != null
+    ? const Color(0xFF36B6BD)
+    : const Color(0xFF36B6BD),
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(11),
               borderSide: BorderSide(
                 color: errorText != null
-                    ? Colors.redAccent
-                    : Colors.white.withOpacity(0.07),
+    ? const Color(0xFF36B6BD)
+    : const Color(0xFF36B6BD),
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(11),
               borderSide: BorderSide(
-                color: errorText != null
-                    ? Colors.redAccent
-                    : const Color(0xFF36B6BD),
+               color: errorText != null
+    ? const Color(0xFF36B6BD)
+    : const Color(0xFF36B6BD),
                 width: 1.2,
               ),
             ),
           ),
         ),
-
-        // =====================================================
-        // ERROR TEXT
-        // =====================================================
-
         if (errorText != null) ...[
           const SizedBox(height: 5),
           Padding(
@@ -152,7 +147,7 @@ class ContactWidgets {
             child: Text(
               errorText,
               style: const TextStyle(
-                color: Colors.redAccent,
+                color:  Color(0xFF36B6BD),
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
               ),

@@ -43,60 +43,36 @@ class ServiceDetail extends StatelessWidget {
       // ========================================================
 
       case "GRAPHIC & WEB DESIGN":
-        return "We create professional and creative graphic and web design solutions that help your brand stand out. From logos and branding to websites and UI/UX, we provide complete design solutions for your business.";
+       
 
       // ========================================================
       // 2. ANIMATION & MEDIA PRODUCTION
       // ========================================================
 
       case "ANIMATION & MEDIA PRODUCTION":
-        return "Bring your ideas to life with professional animation and media production. We create engaging 2D and 3D animations, promotional videos, motion graphics and high-quality video content.";
+       
 
       // ========================================================
       // 3. 3D SIGN SOLUTIONS & FABRICATION
       // ========================================================
 
       case "3D SIGN SOLUTIONS & FABRICATION":
-        return "Make your business visible with premium 3D signage and fabrication solutions. We design and produce custom 3D letters, acrylic signs, LED signs, channel letters and other professional signage.";
-
-      // ========================================================
-      // 4. DIGITAL & OFFSET PRINTING
-      // ========================================================
+       
 
       case "DIGITAL & OFFSET PRINTING":
-        return "Get high-quality printing for your business and marketing needs. We provide digital and offset printing for business cards, brochures, flyers, posters, packaging, stickers and more.";
-
-      // ========================================================
-      // 5. LARGE FORMAT PRINTING
-      // ========================================================
+      
 
       case "LARGE FORMAT PRINTING":
-        return "Our large format printing solutions are perfect for outdoor advertising and large promotional displays. We provide flex, vinyl, billboard, vehicle branding, wall graphics and other large-scale printing solutions.";
-
-      // ========================================================
-      // 6. SIGNAGE PRODUCTION & INSTALLATION
-      // ========================================================
+      
 
       case "SIGNAGE PRODUCTION & INSTALLATION":
-        return "We provide complete signage solutions from design and production to professional installation. Our services include indoor and outdoor signage, LED signs, acrylic signs, shop signs and maintenance.";
-
-      // ========================================================
-      // 7. PROMOTIONAL GIFTS PRINTING
-      // ========================================================
+    
 
       case "PROMOTIONAL GIFTS PRINTING":
-        return "Promote your brand with customized promotional gifts and branded products. We provide custom mugs, T-shirts, caps, keychains, pens, tote bags and corporate promotional gifts.";
-
-      // ========================================================
-      // 8. EVENTS & EXHIBITION STAND DESIGN
-      // ========================================================
+      
 
       case "EVENTS & EXHIBITION STAND DESIGN":
-        return "Create an impressive presence at your next event with professional exhibition stand and event branding solutions. We handle stand design, 3D visualization, fabrication, branding and installation.";
-
-      // ========================================================
-      // DEFAULT
-      // ========================================================
+      
 
       default:
         return "Professional advertising and creative solutions customized according to your business requirements.";

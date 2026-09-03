@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
@@ -18,7 +16,7 @@ class GalleryPage extends StatefulWidget {
 class _GalleryPageState extends State<GalleryPage> {
   static const bg = Color(0xFF0B0F19);
   static const card = Color(0xFF171717);
-  static const accent = Color(0xFF2FBEA6);
+  static const accent = Color(0xFF2BC3DC); // <- heading color
 
   String selectedFilter = "All";
 
@@ -160,10 +158,10 @@ Widget _header() {
             Container(
               width: 4,
               height: 24,
-              decoration: BoxDecoration(
-                color: accent,
-                borderRadius: BorderRadius.circular(10),
-              ),
+             decoration: BoxDecoration(
+  color: Color(0xFF2BC3DC),
+  borderRadius: BorderRadius.circular(10),
+),
             ),
             const SizedBox(width: 10),
             const Text(
@@ -248,11 +246,11 @@ Widget _header() {
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(
                   color: selected
-                      ? accent
+                      ? Color(0xFF2BC3DC)
                       : Colors.white.withOpacity(.07),
                 ),
               ),
-              child: Text(
+              child: Text(      
                 filter,
                 style: TextStyle(
                   color: selected
@@ -320,7 +318,7 @@ class GalleryImage extends StatefulWidget {
 class _GalleryImageState extends State<GalleryImage> {
   bool hovering = false;
 
-  static const accent = Color(0xFF2FBEA6);
+  static const accent = Color(0xFF2BC3DC); // <- heading color (was 0xFF2FBEA6)
 
   @override
   Widget build(BuildContext context) {

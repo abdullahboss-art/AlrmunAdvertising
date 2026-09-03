@@ -6,10 +6,10 @@ class ContactHelpers {
   // =========================================================
 
   static const String phone =
-      '+971 50 123 4567';
+      '+971 52 789 8516';
 
   static const String email =
-      'info@alrmanad.com';
+      'Alrmanadvertising@gmail.com';
 
   static const String location =
       'Dubai, United Arab Emirates';
@@ -68,24 +68,59 @@ class ContactHelpers {
   }
 
   // =========================================================
-  // EMAIL
+  // EMAIL - OWNER
   // =========================================================
 
   static Future<void> emailUs() async {
-    final Uri emailUri = Uri(
-      scheme: 'mailto',
-      path: email,
-      queryParameters: {
-        'subject': 'Inquiry - Alrman Advertising',
-        'body':
-            'Hello Alrman Advertising,\n\n'
-            'I would like to know more about your services.\n\n'
-            'Thank you.',
-      },
+    final Uri gmailUri = Uri.parse(
+      'https://mail.google.com/mail/?view=cm'
+      '&fs=1'
+      '&to=${Uri.encodeComponent(email.trim())}'
+      '&su=${Uri.encodeComponent('Inquiry - Alrman Advertising')}'
+      '&body=${Uri.encodeComponent(
+        'Hello Alrman Advertising,\n\n'
+        'I would like to know more about your services.\n\n'
+        'Thank you.',
+      )}',
     );
 
-    await openUrl(
-      emailUri.toString(),
+    await launchUrl(
+      gmailUri,
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
+  // =========================================================
+  // EMAIL CUSTOMER
+  // =========================================================
+
+  static Future<void> emailCustomer(
+    String customerEmail,
+  ) async {
+    final String cleanEmail = customerEmail.trim();
+
+    if (cleanEmail.isEmpty) {
+      return;
+    }
+
+    final Uri gmailUri = Uri.parse(
+      'https://mail.google.com/mail/?view=cm'
+      '&fs=1'
+      '&to=${Uri.encodeComponent(cleanEmail)}'
+      '&su=${Uri.encodeComponent('Alrman Advertising')}'
+      '&body=${Uri.encodeComponent(
+        'Hello,\n\n'
+        'Thank you for contacting Alrman Advertising.\n\n'
+        'We have received your inquiry and would be happy '
+        'to assist you.\n\n'
+        'Best regards,\n'
+        'Alrman Advertising',
+      )}',
+    );
+
+    await launchUrl(
+      gmailUri,
+      mode: LaunchMode.externalApplication,
     );
   }
 
@@ -160,7 +195,7 @@ class ContactHelpers {
   // YOUTUBE
   // =========================================================
 
-  static Future<void> openYouTube() async {
-    await openUrl(youtubeUrl);
-  }
+  // static Future<void> openYouTube() async {
+  //   await openUrl(youtubeUrl);
+  // }
 }

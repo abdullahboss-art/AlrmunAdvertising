@@ -1,5 +1,4 @@
 import 'package:adverting_app/User/Contacthelp.dart';
-import 'package:adverting_app/User/Home.dart';
 import 'package:adverting_app/User/contactwiget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +20,7 @@ class _ContactPageState extends State<ContactPage> {
   static const Color gold = Color(0xFF36B6BD);
 
   // =========================================================
-  // FORM CONTROLLERS
+  // CONTROLLERS
   // =========================================================
 
   final TextEditingController nameController =
@@ -40,21 +39,20 @@ class _ContactPageState extends State<ContactPage> {
       TextEditingController();
 
   // =========================================================
-  // FORM STATES
+  // STATES
   // =========================================================
 
   bool isSending = false;
   bool isSubmitted = false;
 
   // =========================================================
-  // VALIDATION ERRORS
+  // ERRORS
   // =========================================================
 
   String? nameError;
   String? emailError;
   String? phoneError;
   String? subjectError;
-  String? messageError;
 
   // =========================================================
   // DISPOSE
@@ -76,13 +74,11 @@ class _ContactPageState extends State<ContactPage> {
   // =========================================================
 
   Future<void> submitForm() async {
-    // Clear old errors
     setState(() {
       nameError = null;
       emailError = null;
       phoneError = null;
       subjectError = null;
-      messageError = null;
       isSubmitted = false;
     });
 
@@ -95,24 +91,22 @@ class _ContactPageState extends State<ContactPage> {
     bool hasError = false;
 
     // =========================================================
-    // NAME VALIDATION
+    // NAME
     // =========================================================
 
     if (name.isEmpty) {
       nameError = 'Please enter your name.';
       hasError = true;
     } else if (name.length < 3) {
-      nameError =
-          'Name must be at least 3 characters.';
+      nameError = 'Name must be at least 3 characters.';
       hasError = true;
     } else if (RegExp(r'[0-9]').hasMatch(name)) {
-      nameError =
-          'Name should contain letters only.';
+      nameError = 'Name should contain letters only.';
       hasError = true;
     }
 
     // =========================================================
-    // EMAIL VALIDATION
+    // EMAIL
     // =========================================================
 
     if (email.isEmpty) {
@@ -121,71 +115,60 @@ class _ContactPageState extends State<ContactPage> {
     } else if (!RegExp(
       r'^[\w\.-]+@[\w\.-]+\.\w+$',
     ).hasMatch(email)) {
-      emailError =
-          'Please enter a valid email address.';
+      emailError = 'Please enter a valid email address.';
       hasError = true;
     }
 
     // =========================================================
-    // PHONE VALIDATION
+    // PHONE
     // =========================================================
 
     if (phone.isEmpty) {
-      phoneError =
-          'Please enter your phone number.';
+      phoneError = 'Please enter your phone number.';
       hasError = true;
     } else {
       final String phoneDigits =
           phone.replaceAll(RegExp(r'[^0-9]'), '');
 
       if (phoneDigits.length < 7) {
-        phoneError =
-            'Please enter a valid phone number.';
+        phoneError = 'Please enter a valid phone number.';
         hasError = true;
       } else if (phoneDigits.length > 15) {
-        phoneError =
-            'Phone number is too long.';
+        phoneError = 'Phone number is too long.';
         hasError = true;
       }
     }
 
     // =========================================================
-    // SUBJECT VALIDATION
+    // SUBJECT
     // =========================================================
 
     if (subject.isEmpty) {
       subjectError = 'Please enter a subject.';
       hasError = true;
     } else if (subject.length < 3) {
-      subjectError =
-          'Subject must be at least 3 characters.';
+      subjectError = 'Subject must be at least 3 characters.';
       hasError = true;
     }
 
     // =========================================================
-    // MESSAGE VALIDATION
+    // MESSAGE
+    // =========================================================
+    // OPTIONAL
+    //
+    // IMPORTANT:
+    // Yahan koi validation nahi hai.
+    // Empty message bhi submit ho sakta hai.
     // =========================================================
 
-    if (message.isEmpty) {
-      messageError =
-          'Please enter your message.';
-      hasError = true;
-    } else if (message.length < 10) {
-      messageError =
-          'Message must be at least 10 characters.';
-      hasError = true;
-    }
-
-    // Update validation errors
     setState(() {});
 
-    // Stop if validation failed
     if (hasError) {
       return;
     }
 
     // =========================================================
-    // START SENDING
+    // SENDING
     // =========================================================
 
     setState(() {
@@ -194,7 +177,7 @@ class _ContactPageState extends State<ContactPage> {
 
     try {
       // =======================================================
-      // SAVE TO FIRESTORE
+      // FIRESTORE
       // =======================================================
 
       await FirebaseFirestore.instance
@@ -206,8 +189,7 @@ class _ContactPageState extends State<ContactPage> {
         'subject': subject,
         'message': message,
         'status': 'new',
-        'createdAt':
-            FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
       if (!mounted) return;
@@ -236,8 +218,7 @@ class _ContactPageState extends State<ContactPage> {
           content: Text(
             'Message submitted successfully!',
           ),
-          behavior:
-              SnackBarBehavior.floating,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } catch (e) {
@@ -247,13 +228,15 @@ class _ContactPageState extends State<ContactPage> {
         isSending = false;
       });
 
+      debugPrint('FIRESTORE ERROR: $e');
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Failed to submit message. Please try again.',
+            'Error: $e',
           ),
-          behavior:
-              SnackBarBehavior.floating,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 6),
         ),
       );
     }
@@ -270,8 +253,7 @@ class _ContactPageState extends State<ContactPage> {
 
       body: SafeArea(
         child: SingleChildScrollView(
-          physics:
-              const BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
 
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -291,107 +273,84 @@ class _ContactPageState extends State<ContactPage> {
                 // TOP BAR
                 // =====================================================
 
-              Row(
-  children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'images/assets/Alrmun_logo.png',
+                      width: 112,
+                      height: 70,
+                      fit: BoxFit.contain,
+                    ),
 
-  
+                    const Spacer(),
 
+                    const SizedBox(width: 46),
+                  ],
+                ),
 
+                const SizedBox(height: 24),
 
-    Image.asset(
-      'images/assets/Alrmun_logo.png',
-      width: 112,
-      height: 70,
-      fit: BoxFit.contain,
-    ),
+                // =====================================================
+                // HEADER
+                // =====================================================
 
-    const Spacer(),
-
-    const SizedBox(
-      width: 46,
-    ),
-  ],
-),
-
-const SizedBox(height: 24),
-
-// HEADER
                 Row(
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
 
                   children: [
-
                     Expanded(
                       child: Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start,
 
                         children: [
-
                           RichText(
-                            text:
-                                const TextSpan(
+                            text: const TextSpan(
                               children: [
-
                                 TextSpan(
-                                  text:
-                                      'CONTACT ',
-                                  style:
-                                      TextStyle(
-                                    color:
-                                        Colors.white,
+                                  text: 'CONTACT ',
+                                  style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: 34,
                                     fontWeight:
                                         FontWeight.w900,
-                                    letterSpacing:
-                                        -1,
+                                    letterSpacing: -1,
                                   ),
                                 ),
-
                                 TextSpan(
                                   text: 'US',
-                                  style:
-                                      TextStyle(
+                                  style: TextStyle(
                                     color: gold,
                                     fontSize: 34,
                                     fontWeight:
                                         FontWeight.w900,
-                                    letterSpacing:
-                                        -1,
+                                    letterSpacing: -1,
                                   ),
                                 ),
                               ],
                             ),
                           ),
 
-                          const SizedBox(
-                              height: 10),
+                          const SizedBox(height: 10),
 
                           Container(
                             width: 78,
                             height: 3,
-
-                            decoration:
-                                BoxDecoration(
+                            decoration: BoxDecoration(
                               color: gold,
                               borderRadius:
-                                  BorderRadius
-                                      .circular(
-                                          10),
+                                  BorderRadius.circular(10),
                             ),
                           ),
 
-                          const SizedBox(
-                              height: 14),
+                          const SizedBox(height: 14),
 
                           const Text(
                             "We're here to help and answer any\n"
                             "questions you may have.",
-
                             style: TextStyle(
-                              color:
-                                  Colors.white60,
+                              color: Colors.white60,
                               fontSize: 14,
                               height: 1.55,
                             ),
@@ -403,27 +362,16 @@ const SizedBox(height: 24),
                     Container(
                       width: 48,
                       height: 48,
-
-                      decoration:
-                          BoxDecoration(
+                      decoration: BoxDecoration(
                         borderRadius:
-                            BorderRadius.circular(
-                                14),
-
+                            BorderRadius.circular(14),
                         border: Border.all(
-                          color:
-                              gold.withOpacity(
-                                  0.45),
+                          color: gold.withOpacity(0.45),
                         ),
-
-                        color:
-                            const Color(
-                                0xFF141922),
+                        color: const Color(0xFF141922),
                       ),
-
                       child: const Icon(
-                        Icons
-                            .headset_mic_rounded,
+                        Icons.headset_mic_rounded,
                         color: gold,
                         size: 25,
                       ),
@@ -439,40 +387,25 @@ const SizedBox(height: 24),
 
                 Row(
                   children: [
-
                     Expanded(
-                      child:
-                          ContactWidgets
-                              .contactCard(
-                        icon:
-                            Icons.phone_rounded,
+                      child: ContactWidgets.contactCard(
+                        icon: Icons.phone_rounded,
                         title: 'CALL US',
-                        value:
-                            ContactHelpers
-                                .phone,
+                        value: ContactHelpers.phone,
                         iconColor: gold,
-                        onTap:
-                            ContactHelpers
-                                .callUs,
+                        onTap: ContactHelpers.callUs,
                       ),
                     ),
 
                     const SizedBox(width: 8),
 
                     Expanded(
-                      child:
-                          ContactWidgets
-                              .contactCard(
-                        icon:
-                            Icons.email_rounded,
+                      child: ContactWidgets.contactCard(
+                        icon: Icons.email_rounded,
                         title: 'EMAIL US',
-                        value:
-                            ContactHelpers
-                                .email,
+                        value: ContactHelpers.email,
                         iconColor: gold,
-                        onTap:
-                            ContactHelpers
-                                .emailUs,
+                        onTap: ContactHelpers.emailUs,
                       ),
                     ),
                   ],
@@ -480,44 +413,31 @@ const SizedBox(height: 24),
 
                 const SizedBox(height: 8),
 
-                // =====================================================
-                // LOCATION + WEBSITE
-                // =====================================================
-
                 Row(
                   children: [
-
                     Expanded(
-                      child:
-                          ContactWidgets
-                              .contactCard(
-                        icon: Icons
-                            .location_on_rounded,
+                      child: ContactWidgets.contactCard(
+                        icon:
+                            Icons.location_on_rounded,
                         title: 'LOCATION',
-                        value:
-                            'Dubai, UAE',
+                        value: 'Dubai, UAE',
                         iconColor: gold,
                         onTap:
-                            ContactHelpers
-                                .openLocation,
+                            ContactHelpers.openLocation,
                       ),
                     ),
 
                     const SizedBox(width: 8),
 
                     Expanded(
-                      child:
-                          ContactWidgets
-                              .contactCard(
-                        icon: Icons
-                            .language_rounded,
+                      child: ContactWidgets.contactCard(
+                        icon: Icons.language_rounded,
                         title: 'WEBSITE',
                         value:
                             'alrmanadvertising.com',
                         iconColor: gold,
                         onTap:
-                            ContactHelpers
-                                .openWebsite,
+                            ContactHelpers.openWebsite,
                       ),
                     ),
                   ],
@@ -526,29 +446,24 @@ const SizedBox(height: 24),
                 const SizedBox(height: 12),
 
                 // =====================================================
-                // SEND MESSAGE CARD
+                // FORM CARD
                 // =====================================================
 
                 Container(
                   width: double.infinity,
-
-                  padding:
-                      const EdgeInsets.fromLTRB(
+                  padding: const EdgeInsets.fromLTRB(
                     18,
                     20,
                     18,
                     18,
                   ),
-
-                  decoration:
-                      BoxDecoration(
+                  decoration: BoxDecoration(
                     color: card,
                     borderRadius:
-                        BorderRadius.circular(
-                            18),
+                        BorderRadius.circular(18),
                     border: Border.all(
-                      color: Colors.white
-                          .withOpacity(0.08),
+                      color:
+                          Colors.white.withOpacity(0.08),
                     ),
                   ),
 
@@ -558,34 +473,29 @@ const SizedBox(height: 24),
 
                     children: [
 
-                      RichText(
-                        text:
-                            const TextSpan(
-                          children: [
+                      // =================================================
+                      // TITLE
+                      // =================================================
 
+                      RichText(
+                        text: const TextSpan(
+                          children: [
                             TextSpan(
-                              text:
-                                  'SEND US A ',
-                              style:
-                                  TextStyle(
-                                color:
-                                    Colors.white,
+                              text: 'SEND US A ',
+                              style: TextStyle(
+                                color: Colors.white,
                                 fontSize: 16,
                                 fontWeight:
-                                    FontWeight
-                                        .w800,
+                                    FontWeight.w800,
                               ),
                             ),
-
                             TextSpan(
                               text: 'MESSAGE',
-                              style:
-                                  TextStyle(
+                              style: TextStyle(
                                 color: gold,
                                 fontSize: 16,
                                 fontWeight:
-                                    FontWeight
-                                        .w800,
+                                    FontWeight.w800,
                               ),
                             ),
                           ],
@@ -600,8 +510,7 @@ const SizedBox(height: 24),
                         color: gold,
                       ),
 
-                      const SizedBox(
-                          height: 17),
+                      const SizedBox(height: 17),
 
                       // =================================================
                       // NAME + EMAIL
@@ -609,42 +518,35 @@ const SizedBox(height: 24),
 
                       Row(
                         crossAxisAlignment:
-                            CrossAxisAlignment
-                                .start,
+                            CrossAxisAlignment.start,
 
                         children: [
-
                           Expanded(
                             child:
-                                ContactWidgets
-                                    .inputField(
+                                ContactWidgets.inputField(
                               controller:
                                   nameController,
                               hint: 'Your Name',
                               icon: Icons
                                   .person_outline_rounded,
-                              errorText:
-                                  nameError,
+                              errorText: nameError,
                             ),
                           ),
 
-                          const SizedBox(
-                              width: 8),
+                          const SizedBox(width: 8),
 
                           Expanded(
                             child:
-                                ContactWidgets
-                                    .inputField(
+                                ContactWidgets.inputField(
                               controller:
                                   emailController,
                               hint: 'Your Email',
-                              icon: Icons
-                                  .email_outlined,
+                              icon:
+                                  Icons.email_outlined,
                               keyboardType:
                                   TextInputType
                                       .emailAddress,
-                              errorText:
-                                  emailError,
+                              errorText: emailError,
                             ),
                           ),
                         ],
@@ -657,11 +559,9 @@ const SizedBox(height: 24),
                       // =================================================
 
                       ContactWidgets.inputField(
-                        controller:
-                            phoneController,
+                        controller: phoneController,
                         hint: 'Phone Number',
-                        icon:
-                            Icons.phone_outlined,
+                        icon: Icons.phone_outlined,
                         keyboardType:
                             TextInputType.phone,
                         errorText: phoneError,
@@ -677,27 +577,22 @@ const SizedBox(height: 24),
                         controller:
                             subjectController,
                         hint: 'Subject',
-                        icon:
-                            Icons.subject_rounded,
-                        errorText:
-                            subjectError,
+                        icon: Icons.subject_rounded,
+                        errorText: subjectError,
                       ),
 
                       const SizedBox(height: 8),
 
                       // =================================================
-                      // MESSAGE
+                      // MESSAGE OPTIONAL
                       // =================================================
 
                       ContactWidgets.inputField(
                         controller:
                             messageController,
-                        hint: 'Your Message',
-                        icon:
-                            Icons.edit_outlined,
+                        hint: 'Your Message (Optional)',
+                        icon: Icons.edit_outlined,
                         maxLines: 4,
-                        errorText:
-                            messageError,
                       ),
 
                       const SizedBox(height: 12),
@@ -712,10 +607,9 @@ const SizedBox(height: 24),
 
                         child:
                             ElevatedButton.icon(
-                          onPressed:
-                              isSending
-                                  ? null
-                                  : submitForm,
+                          onPressed: isSending
+                              ? null
+                              : submitForm,
 
                           icon: isSending
                               ? const SizedBox(
@@ -723,17 +617,13 @@ const SizedBox(height: 24),
                                   height: 18,
                                   child:
                                       CircularProgressIndicator(
-                                    strokeWidth:
-                                        2,
-                                    color:
-                                        Colors.black,
+                                    strokeWidth: 2,
+                                    color: Colors.black,
                                   ),
                                 )
                               : const Icon(
-                                  Icons
-                                      .send_rounded,
-                                  color:
-                                      Colors.black,
+                                  Icons.send_rounded,
+                                  color: Colors.black,
                                   size: 19,
                                 ),
 
@@ -741,11 +631,8 @@ const SizedBox(height: 24),
                             isSending
                                 ? 'SENDING...'
                                 : 'SEND MESSAGE',
-
-                            style:
-                                const TextStyle(
-                              color:
-                                  Colors.black,
+                            style: const TextStyle(
+                              color: Colors.black,
                               fontSize: 13,
                               fontWeight:
                                   FontWeight.w800,
@@ -753,22 +640,15 @@ const SizedBox(height: 24),
                           ),
 
                           style:
-                              ElevatedButton
-                                  .styleFrom(
-                            backgroundColor:
-                                gold,
-
+                              ElevatedButton.styleFrom(
+                            backgroundColor: gold,
                             disabledBackgroundColor:
                                 gold,
-
                             elevation: 0,
-
                             shape:
                                 RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius
-                                      .circular(
-                                          12),
+                                  BorderRadius.circular(12),
                             ),
                           ),
                         ),
@@ -778,7 +658,7 @@ const SizedBox(height: 24),
                 ),
 
                 // =====================================================
-                // THANK YOU MESSAGE
+                // SUCCESS CARD
                 // =====================================================
 
                 if (isSubmitted) ...[
@@ -786,43 +666,29 @@ const SizedBox(height: 24),
 
                   Container(
                     width: double.infinity,
-
                     padding:
                         const EdgeInsets.all(15),
-
-                    decoration:
-                        BoxDecoration(
+                    decoration: BoxDecoration(
                       color:
-                          const Color(
-                              0xFF102A2D),
-
+                          const Color(0xFF102A2D),
                       borderRadius:
-                          BorderRadius.circular(
-                              16),
-
+                          BorderRadius.circular(16),
                       border: Border.all(
                         color:
-                            gold.withOpacity(
-                                0.35),
+                            gold.withOpacity(0.35),
                       ),
                     ),
 
                     child: Row(
                       children: [
-
                         Container(
                           width: 42,
                           height: 42,
-
-                          decoration:
-                              BoxDecoration(
-                            shape:
-                                BoxShape.circle,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color:
-                                gold.withOpacity(
-                                    0.15),
+                                gold.withOpacity(0.15),
                           ),
-
                           child: const Icon(
                             Icons.check_rounded,
                             color: gold,
@@ -830,27 +696,20 @@ const SizedBox(height: 24),
                           ),
                         ),
 
-                        const SizedBox(
-                            width: 12),
+                        const SizedBox(width: 12),
 
                         const Expanded(
                           child: Column(
                             crossAxisAlignment:
-                                CrossAxisAlignment
-                                    .start,
-
+                                CrossAxisAlignment.start,
                             children: [
-
                               Text(
                                 'Thank You for Your Message!',
-                                style:
-                                    TextStyle(
-                                  color:
-                                      Colors.white,
+                                style: TextStyle(
+                                  color: Colors.white,
                                   fontSize: 14,
                                   fontWeight:
-                                      FontWeight
-                                          .w800,
+                                      FontWeight.w800,
                                 ),
                               ),
 
@@ -859,10 +718,8 @@ const SizedBox(height: 24),
                               Text(
                                 'Your message has been received successfully. '
                                 'Our team will get back to you soon.',
-                                style:
-                                    TextStyle(
-                                  color:
-                                      Colors.white60,
+                                style: TextStyle(
+                                  color: Colors.white60,
                                   fontSize: 12,
                                   height: 1.4,
                                 ),
@@ -883,73 +740,51 @@ const SizedBox(height: 24),
 
                 Container(
                   width: double.infinity,
-
                   padding:
                       const EdgeInsets.all(16),
-
-                  decoration:
-                      BoxDecoration(
+                  decoration: BoxDecoration(
                     color: card,
-
                     borderRadius:
-                        BorderRadius.circular(
-                            17),
-
+                        BorderRadius.circular(17),
                     border: Border.all(
-                      color: Colors.white
-                          .withOpacity(0.08),
+                      color:
+                          Colors.white.withOpacity(0.08),
                     ),
                   ),
 
                   child: Row(
                     children: [
-
                       Container(
                         width: 48,
                         height: 48,
-
-                        decoration:
-                            BoxDecoration(
-                          shape:
-                              BoxShape.circle,
-
-                          border:
-                              Border.all(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
                             color:
-                                gold.withOpacity(
-                                    0.6),
+                                gold.withOpacity(0.6),
                           ),
                         ),
-
                         child: const Icon(
-                          Icons
-                              .verified_rounded,
+                          Icons.verified_rounded,
                           color: gold,
                           size: 27,
                         ),
                       ),
 
-                      const SizedBox(
-                          width: 14),
+                      const SizedBox(width: 14),
 
                       const Expanded(
                         child: Column(
                           crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
-
+                              CrossAxisAlignment.start,
                           children: [
-
                             Text(
                               'We value your feedback!',
-                              style:
-                                  TextStyle(
-                                color:
-                                    Colors.white,
+                              style: TextStyle(
+                                color: Colors.white,
                                 fontSize: 14,
                                 fontWeight:
-                                    FontWeight
-                                        .w800,
+                                    FontWeight.w800,
                               ),
                             ),
 
@@ -958,10 +793,8 @@ const SizedBox(height: 24),
                             Text(
                               'Our team will get back to you\n'
                               'as soon as possible.',
-                              style:
-                                  TextStyle(
-                                color:
-                                    Colors.white54,
+                              style: TextStyle(
+                                color: Colors.white54,
                                 fontSize: 12,
                                 height: 1.4,
                               ),
@@ -982,12 +815,10 @@ const SizedBox(height: 24),
                 const Center(
                   child: Text(
                     'FOLLOW US',
-
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
-                      fontWeight:
-                          FontWeight.w800,
+                      fontWeight: FontWeight.w800,
                       letterSpacing: 1,
                     ),
                   ),
@@ -1004,43 +835,34 @@ const SizedBox(height: 24),
                       MainAxisAlignment.center,
 
                   children: [
-
-                    ContactWidgets
-                        .socialImageButton(
+                    ContactWidgets.socialImageButton(
                       'images/assets/Whatsepp.png',
                       const Color(0xFF25D366),
-                      ContactHelpers
-                          .openWhatsApp,
+                      ContactHelpers.openWhatsApp,
                     ),
 
                     const SizedBox(width: 10),
 
-                    ContactWidgets
-                        .socialImageButton(
+                    ContactWidgets.socialImageButton(
                       'images/assets/Instagram.png',
                       const Color(0xFFE1306C),
-                      ContactHelpers
-                          .openInstagram,
+                      ContactHelpers.openInstagram,
                     ),
 
                     const SizedBox(width: 10),
 
-                    ContactWidgets
-                        .socialImageButton(
+                    ContactWidgets.socialImageButton(
                       'images/assets/Linkdin.png',
                       const Color(0xFF0A66C2),
-                      ContactHelpers
-                          .openLinkedIn,
+                      ContactHelpers.openLinkedIn,
                     ),
 
                     const SizedBox(width: 10),
 
-                    ContactWidgets
-                        .socialImageButton(
+                    ContactWidgets.socialImageButton(
                       'images/assets/Facebook.png',
                       const Color(0xFF1877F2),
-                      ContactHelpers
-                          .openFacebook,
+                      ContactHelpers.openFacebook,
                     ),
                   ],
                 ),

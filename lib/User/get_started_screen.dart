@@ -454,13 +454,14 @@ Widget _buildFullScreenBackground() {
           Container(
             width: 160,
             height: 160,
-            padding: const EdgeInsets.all(4),
+            // padding: const EdgeInsets.all(2),
 
 
             child: Image.asset(
               "images/assets/Alrmun_logo.png",
               height: 60,
               width: 60,
+             
               fit: BoxFit.contain,
 
               errorBuilder: (

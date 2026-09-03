@@ -436,19 +436,34 @@ class _SplashScreenState extends State<SplashScreen>
                                   // OUTER FRAME
                                   // ====================================
 
-                                  Container(
-                                    width: 318,
-                                    height: 165,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(5),
-                                      border: Border.all(
-                                        color:
-                                            kAccent.withOpacity(0.30),
-                                        width: 1,
-                                      ),
-                                    ),
-                                  ),
+                                // MAIN LED SCREEN
+
+Container(
+  width: 300,
+  height: 165,
+  padding: const EdgeInsets.all(6),
+  decoration: BoxDecoration(
+    color: const Color(0xFF03080D).withOpacity(0.75),
+    border: Border.all(
+      color: kAccent.withOpacity(0.60),
+      width: 1.4,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: kAccent.withOpacity(0.15),
+        blurRadius: 15,
+      ),
+    ],
+  ),
+  child: Container(
+    decoration: BoxDecoration(
+      border: Border.all(
+        color: kAccent.withOpacity(0.90),
+        width: 1,
+      ),
+    ),
+  ),
+),
 
                                   // ====================================
                                   // MAIN LED SCREEN
@@ -659,7 +674,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   kAccent,
                                   kAccent2,
                                 ],
-                              ),
+                              ),  
                               borderRadius:
                                   BorderRadius.circular(20),
                               boxShadow: [
