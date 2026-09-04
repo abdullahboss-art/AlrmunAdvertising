@@ -8,7 +8,7 @@ class EstimateColors {
   static const Color accent = Color(0xFF16C8D8);
 }
 
-const String whatsappNumber = '+971 52 789 8516';
+const String whatsappNumber = '971527898516';
 
 final List<Map<String, dynamic>> advertisingCategories = [
   {

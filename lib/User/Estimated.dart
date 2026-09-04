@@ -1,5 +1,6 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'estimate_data.dart';
@@ -14,9 +15,8 @@ class AdvertisingEstimatePage extends StatefulWidget {
       _AdvertisingEstimatePageState();
 }
 
-class _AdvertisingEstimatePageState
-    extends State<AdvertisingEstimatePage> {
-
+class _AdvertisingEstimatePageState extends State<AdvertisingEstimatePage>
+    with SingleTickerProviderStateMixin {
   // =========================================================
   // FORM KEY
   // =========================================================
@@ -33,8 +33,7 @@ class _AdvertisingEstimatePageState
   // SCROLL CONTROLLER
   // =========================================================
 
-  final ScrollController _scrollController =
-      ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   // =========================================================
   // QUANTITY FIELD KEY
@@ -42,9 +41,7 @@ class _AdvertisingEstimatePageState
 
   final GlobalKey _quantityKey = GlobalKey();
 
-  // =========================================================
-  // TEXT CONTROLLERS
-  // =========================================================
+
 
   final TextEditingController _quantityController =
       TextEditingController();
@@ -54,6 +51,13 @@ class _AdvertisingEstimatePageState
 
   final TextEditingController _heightController =
       TextEditingController();
+
+  // =========================================================
+  // WHATSAPP ANIMATION
+  // =========================================================
+
+  late AnimationController _whatsappAnimationController;
+  late Animation<double> _whatsappAnimation;
 
   // =========================================================
   // VARIABLES
@@ -66,6 +70,40 @@ class _AdvertisingEstimatePageState
   bool withInstallation = false;
 
   bool submitted = false;
+
+  // =========================================================
+  // INIT STATE
+  // =========================================================
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ---------------------------------------------------------
+    // WHATSAPP FLOATING ANIMATION
+    // ---------------------------------------------------------
+
+    _whatsappAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 1800,
+      ),
+    );
+
+    _whatsappAnimation = Tween<double>(
+      begin: -6,
+      end: 6,
+    ).animate(
+      CurvedAnimation(
+        parent: _whatsappAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _whatsappAnimationController.repeat(
+      reverse: true,
+    );
+  }
 
   // =========================================================
   // CALCULATIONS
@@ -188,16 +226,13 @@ class _AdvertisingEstimatePageState
         SnackBar(
           backgroundColor:
               EstimateColors.cardColor,
-
           behavior:
               SnackBarBehavior.floating,
-
           shape:
               RoundedRectangleBorder(
             borderRadius:
                 BorderRadius.circular(12),
           ),
-
           content: const Row(
             children: [
               Icon(
@@ -205,9 +240,7 @@ class _AdvertisingEstimatePageState
                 color:
                     EstimateColors.accent,
               ),
-
               SizedBox(width: 10),
-
               Expanded(
                 child: Text(
                   'Please select a printing service first.',
@@ -260,15 +293,12 @@ class _AdvertisingEstimatePageState
         if (resultContext != null) {
           Scrollable.ensureVisible(
             resultContext,
-
             duration:
                 const Duration(
               milliseconds: 700,
             ),
-
             curve:
                 Curves.easeInOutCubic,
-
             alignment: 0.04,
           );
         }
@@ -343,6 +373,57 @@ Thank you.
   }
 
   // =========================================================
+  // WHATSAPP FLOATING BUTTON
+  // =========================================================
+
+  Widget _buildWhatsAppFloatingButton() {
+    return AnimatedBuilder(
+      animation: _whatsappAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(
+            0,
+            _whatsappAnimation.value,
+          ),
+          child: child,
+        );
+      },
+      child: GestureDetector(
+        onTap: openWhatsApp,
+        child: Container(
+          width: 58,
+          height: 58,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF25D366),
+            boxShadow: [
+              BoxShadow(
+                color:
+                    const Color(0xFF25D366)
+                        .withOpacity(0.45),
+                blurRadius: 18,
+                spreadRadius: 2,
+              ),
+            ],
+            border: Border.all(
+              color:
+                  Colors.white.withOpacity(0.20),
+              width: 1,
+            ),
+          ),
+          child: const Center(
+            child: FaIcon(
+              FontAwesomeIcons.whatsapp,
+              color: Colors.white,
+              size: 31,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =========================================================
   // SHOW MESSAGE
   // =========================================================
 
@@ -362,6 +443,8 @@ Thank you.
 
   @override
   void dispose() {
+    _whatsappAnimationController.dispose();
+
     _scrollController.dispose();
 
     _quantityController.dispose();
@@ -400,12 +483,9 @@ Thank you.
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-
             color: Colors.white,
-
             size: 19,
           ),
-
           onPressed: () {
             Navigator.pop(context);
           },
@@ -413,7 +493,6 @@ Thank you.
 
         title: const Text(
           'Get Your Estimate',
-
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -428,181 +507,210 @@ Thank you.
       // =======================================================
 
       body: SafeArea(
-        child: SingleChildScrollView(
-          // IMPORTANT
-          // Same controller is passed to RequirementsCard
-          controller:
-              _scrollController,
+        child: Stack(
+          children: [
+            // =================================================
+            // MAIN SCROLL CONTENT
+            // =================================================
 
-          physics:
-              const BouncingScrollPhysics(),
+            SingleChildScrollView(
+              controller:
+                  _scrollController,
 
-          padding:
-              const EdgeInsets.fromLTRB(
-            16,
-            8,
-            16,
-            40,
-          ),
+              physics:
+                  const BouncingScrollPhysics(),
 
-          child: Form(
-            key: _formKey,
+              padding:
+                  const EdgeInsets.fromLTRB(
+                16,
+                8,
+                16,
+                40,
+              ),
 
-            child: Column(
-              children: [
-                // =================================================
-                // HEADER
-                // =================================================
+              child: Form(
+                key: _formKey,
 
-                const EstimateHeader(),
+                child: Column(
+                  children: [
+                    // =========================================
+                    // HEADER
+                    // =========================================
 
-                const SizedBox(height: 22),
+                    const EstimateHeader(),
 
-                // =================================================
-                // REQUIREMENTS CARD
-                // =================================================
+                    const SizedBox(
+                      height: 22,
+                    ),
 
-                RequirementsCard(
-                  selectedCategory:
-                      selectedCategory,
+                    // =========================================
+                    // REQUIREMENTS CARD
+                    // =========================================
 
-                  selectedUnit:
-                      selectedUnit,
+                    RequirementsCard(
+                      selectedCategory:
+                          selectedCategory,
 
-                  withInstallation:
-                      withInstallation,
+                      selectedUnit:
+                          selectedUnit,
 
-                  // ------------------------------------------------
-                  // CONTROLLERS
-                  // ------------------------------------------------
+                      withInstallation:
+                          withInstallation,
 
-                  quantityController:
-                      _quantityController,
+                      // ---------------------------------------
+                      // CONTROLLERS
+                      // ---------------------------------------
 
-                  widthController:
-                      _widthController,
+                      quantityController:
+                          _quantityController,
 
-                  heightController:
-                      _heightController,
+                      widthController:
+                          _widthController,
 
-                  // ------------------------------------------------
-                  // CATEGORY
-                  // ------------------------------------------------
+                      heightController:
+                          _heightController,
 
-                  onCategoryChanged:
-                      (value) {
-                    setState(() {
-                      selectedCategory =
-                          value;
+                      // ---------------------------------------
+                      // CATEGORY
+                      // ---------------------------------------
 
-                      submitted = false;
-                    });
-                  },
+                      onCategoryChanged:
+                          (value) {
+                        setState(() {
+                          selectedCategory =
+                              value;
 
-                  // ------------------------------------------------
-                  // UNIT
-                  // ------------------------------------------------
+                          submitted =
+                              false;
+                        });
+                      },
 
-                  onUnitChanged:
-                      (value) {
-                    setState(() {
-                      selectedUnit =
-                          value;
+                      // ---------------------------------------
+                      // UNIT
+                      // ---------------------------------------
 
-                      submitted = false;
-                    });
-                  },
+                      onUnitChanged:
+                          (value) {
+                        setState(() {
+                          selectedUnit =
+                              value;
 
-                  // ------------------------------------------------
-                  // INSTALLATION
-                  // ------------------------------------------------
+                          submitted =
+                              false;
+                        });
+                      },
 
-                  onInstallationChanged:
-                      (value) {
-                    setState(() {
-                      withInstallation =
-                          value;
+                      // ---------------------------------------
+                      // INSTALLATION
+                      // ---------------------------------------
 
-                      submitted = false;
-                    });
-                  },
+                      onInstallationChanged:
+                          (value) {
+                        setState(() {
+                          withInstallation =
+                              value;
 
-                  // ------------------------------------------------
-                  // CALCULATE
-                  // ------------------------------------------------
+                          submitted =
+                              false;
+                        });
+                      },
 
-                  onCalculate:
-                      calculateEstimate,
+                      // ---------------------------------------
+                      // CALCULATE
+                      // ---------------------------------------
 
-                  // ------------------------------------------------
-                  // SCROLL CONTROLLER
-                  // ------------------------------------------------
+                      onCalculate:
+                          calculateEstimate,
 
-                  scrollController:
-                      _scrollController,
+                      // ---------------------------------------
+                      // SCROLL CONTROLLER
+                      // ---------------------------------------
 
-                  // ------------------------------------------------
-                  // QUANTITY KEY
-                  // ------------------------------------------------
+                      scrollController:
+                          _scrollController,
 
-                  quantityKey:
-                      _quantityKey,
+                      // ---------------------------------------
+                      // QUANTITY KEY
+                      // ---------------------------------------
+
+                      quantityKey:
+                          _quantityKey,
+                    ),
+
+                    // =========================================
+                    // RESULT
+                    // =========================================
+
+                    if (submitted) ...[
+                      const SizedBox(
+                        height: 18,
+                      ),
+
+                      EstimateResultCard(
+                        key: _resultKey,
+
+                        resultKey:
+                            _resultKey,
+
+                        selectedCategory:
+                            selectedCategory,
+
+                        quantity:
+                            quantity,
+
+                        width:
+                            _widthController
+                                .text
+                                .trim(),
+
+                        height:
+                            _heightController
+                                .text
+                                .trim(),
+
+                        selectedUnit:
+                            selectedUnit,
+
+                        area:
+                            area,
+
+                        printingCost:
+                            printingCost,
+
+                        installationCost:
+                            installationCost,
+
+                        totalPrice:
+                            totalPrice,
+
+                        onWhatsApp:
+                            openWhatsApp,
+                      ),
+                    ],
+
+                    // Extra bottom space so floating button
+                    // doesn't cover the last content.
+                    const SizedBox(
+                      height: 45,
+                    ),
+                  ],
                 ),
-
-                // =================================================
-                // RESULT
-                // =================================================
-
-                if (submitted) ...[
-                  const SizedBox(height: 18),
-
-                  EstimateResultCard(
-                    key: _resultKey,
-
-                    resultKey:
-                        _resultKey,
-
-                    selectedCategory:
-                        selectedCategory,
-
-                    quantity:
-                        quantity,
-
-                    width:
-                        _widthController
-                            .text
-                            .trim(),
-
-                    height:
-                        _heightController
-                            .text
-                            .trim(),
-
-                    selectedUnit:
-                        selectedUnit,
-
-                    area:
-                        area,
-
-                    printingCost:
-                        printingCost,
-
-                    installationCost:
-                        installationCost,
-
-                    totalPrice:
-                        totalPrice,
-
-                    onWhatsApp:
-                        openWhatsApp,
-                  ),
-                ],
-              ],
+              ),
             ),
-          ),
+
+            // =================================================
+            // WHATSAPP FLOATING BUTTON
+            // =================================================
+
+            Positioned(
+              right: 18,
+              bottom: 20,
+              child:
+                  _buildWhatsAppFloatingButton(),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-

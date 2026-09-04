@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:adverting_app/User/Login.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +18,16 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   bool showAllServices = false;
+
+  // =========================================================
+  // WHATSAPP FLOATING ANIMATION
+  // =========================================================
+
+  late AnimationController _whatsappAnimationController;
+  late Animation<double> _whatsappAnimation;
 
   // =========================================================
   // CAROUSEL
@@ -77,6 +87,27 @@ class _HomeScreenState extends State<HomeScreen> {
         _autoSlide();
       },
     );
+
+    // =========================================================
+    // WHATSAPP FLOATING ANIMATION
+    // =========================================================
+
+    _whatsappAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    );
+
+    _whatsappAnimation = Tween<double>(
+      begin: -6,
+      end: 6,
+    ).animate(
+      CurvedAnimation(
+        parent: _whatsappAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _whatsappAnimationController.repeat(reverse: true);
   }
 
   // =========================================================
@@ -133,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _carouselTimer?.cancel();
     _carouselController.dispose();
+    _whatsappAnimationController.dispose();
     super.dispose();
   }
 
@@ -826,6 +858,79 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // =========================================================
+  // WHATSAPP
+  // =========================================================
+
+  Future<void> _openWhatsApp() async {
+    // Replace this with your WhatsApp number.
+    // Country code ke sath, + sign aur spaces ke baghair.
+    const String phoneNumber = '971527898516';
+
+    const String message =
+        'Hello Alrman Advertising, I would like to know more about your services.';
+
+    final Uri whatsappUrl = Uri.parse(
+      'https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}',
+    );
+
+    try {
+      if (await canLaunchUrl(whatsappUrl)) {
+        await launchUrl(
+          whatsappUrl,
+          mode: LaunchMode.externalApplication,
+        );
+      }
+    } catch (e) {
+      debugPrint('WhatsApp Error: $e');
+    }
+  }
+
+  // =========================================================
+  // FLOATING WHATSAPP ICON
+  // =========================================================
+
+  Widget _buildWhatsAppFloatingButton() {
+    return AnimatedBuilder(
+      animation: _whatsappAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, _whatsappAnimation.value),
+          child: child,
+        );
+      },
+      child: GestureDetector(
+        onTap: _openWhatsApp,
+        child: Container(
+          width: 58,
+          height: 58,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFF25D366),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF25D366).withOpacity(0.45),
+                blurRadius: 18,
+                spreadRadius: 2,
+              ),
+            ],
+            border: Border.all(
+              color: Colors.white.withOpacity(0.20),
+              width: 1,
+            ),
+          ),
+          child: const Center(
+            child: FaIcon(
+              FontAwesomeIcons.whatsapp,
+              color: Colors.white,
+              size: 31,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // =========================================================
   // ESTIMATE
   // =========================================================
 
@@ -1127,11 +1232,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body:
           SafeArea(
         child:
+            Stack(
+          children: [
             SingleChildScrollView(
-          physics:
-              const BouncingScrollPhysics(),
+              physics:
+                  const BouncingScrollPhysics(),
 
-          child:
+              child:
               Column(
             crossAxisAlignment:
                 CrossAxisAlignment
@@ -1537,17 +1644,23 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(
                 height: 35,
               ),
-            ],
+              ],
+            ),
           ),
-        ),
+
+          // =====================================================
+          // FLOATING WHATSAPP
+          // =====================================================
+
+          Positioned(
+            right: 18,
+            bottom: 20,
+            child: _buildWhatsAppFloatingButton(),
+          ),
+        ],
       ),
 
-      // =========================================================
-      // BOTTOM NAVIGATION BAR
-      // =========================================================
-
-      // bottomNavigationBar:
-      //     _buildBottomNavigationBar(),
+          )
     );
   }
 }
