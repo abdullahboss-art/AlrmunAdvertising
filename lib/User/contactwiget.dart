@@ -76,88 +76,100 @@ class ContactWidgets {
   // INPUT FIELD
   // =========================================================
 
-  static Widget inputField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-    String? errorText,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12.5,
+ static Widget inputField({
+  required TextEditingController controller,
+  required String hint,
+  required IconData icon,
+  TextInputType keyboardType = TextInputType.text,
+  int maxLines = 1,
+  String? errorText,
+}) {
+  final bool hasError =
+      errorText != null && errorText.trim().isNotEmpty;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        maxLines: maxLines,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12.5,
+        ),
+        cursorColor: hasError
+            ? Colors.red
+            : const Color(0xFF36B6BD),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: const TextStyle(
+            color: Colors.white38,
+            fontSize: 12,
           ),
-          cursorColor: const Color(0xFF36B6BD),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: const TextStyle(
-              color: Colors.white38,
-              fontSize: 12,
+          prefixIcon: Icon(
+            icon,
+            color: hasError
+                ? Colors.red
+                : Colors.white54,
+            size: 18,
+          ),
+          filled: true,
+          fillColor: const Color(0xFF141820),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 13,
+          ),
+
+          // Normal border / Error border
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11),
+            borderSide: BorderSide(
+              color: hasError
+                  ? Colors.red
+                  : const Color(0xFF36B6BD),
             ),
-            prefixIcon: Icon(
-              icon,
-              color: Colors.white54,
-              size: 18,
+          ),
+
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11),
+            borderSide: BorderSide(
+              color: hasError
+                  ? Colors.red
+                  : Colors.white.withOpacity(0.08),
             ),
-            filled: true,
-            fillColor: const Color(0xFF141820),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 13,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(11),
-              borderSide: BorderSide(
-              color: errorText != null
-    ? const Color(0xFF36B6BD)
-    : const Color(0xFF36B6BD),
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(11),
-              borderSide: BorderSide(
-                color: errorText != null
-    ? const Color(0xFF36B6BD)
-    : const Color(0xFF36B6BD),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(11),
-              borderSide: BorderSide(
-               color: errorText != null
-    ? const Color(0xFF36B6BD)
-    : const Color(0xFF36B6BD),
-                width: 1.2,
-              ),
+          ),
+
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(11),
+            borderSide: BorderSide(
+              color: hasError
+                  ? Colors.red
+                  : const Color(0xFF36B6BD),
+              width: 1.2,
             ),
           ),
         ),
-        if (errorText != null) ...[
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Text(
-              errorText,
-              style: const TextStyle(
-                color:  Color(0xFF36B6BD),
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-              ),
+      ),
+
+      // Error message
+      if (hasError) ...[
+        const SizedBox(height: 5),
+        Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Text(
+            errorText!,
+            style: const TextStyle(
+              color: Colors.red,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
             ),
           ),
-        ],
+        ),
       ],
-    );
-  }
-
+    ],
+  );
+}
   // =========================================================
   // SOCIAL BUTTON
   // =========================================================

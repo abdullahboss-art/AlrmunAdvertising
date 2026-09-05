@@ -34,51 +34,7 @@ class ServiceDetail extends StatelessWidget {
   // SERVICE DESCRIPTION
   // ============================================================
 
-  String getDescription(String title) {
-    final String cleanTitle = _cleanTitle(title);
-
-    switch (cleanTitle) {
-      // ========================================================
-      // 1. GRAPHIC & WEB DESIGN
-      // ========================================================
-
-      case "GRAPHIC & WEB DESIGN":
-       
-
-      // ========================================================
-      // 2. ANIMATION & MEDIA PRODUCTION
-      // ========================================================
-
-      case "ANIMATION & MEDIA PRODUCTION":
-       
-
-      // ========================================================
-      // 3. 3D SIGN SOLUTIONS & FABRICATION
-      // ========================================================
-
-      case "3D SIGN SOLUTIONS & FABRICATION":
-       
-
-      case "DIGITAL & OFFSET PRINTING":
-      
-
-      case "LARGE FORMAT PRINTING":
-      
-
-      case "SIGNAGE PRODUCTION & INSTALLATION":
-    
-
-      case "PROMOTIONAL GIFTS PRINTING":
-      
-
-      case "EVENTS & EXHIBITION STAND DESIGN":
-      
-
-      default:
-        return "Professional advertising and creative solutions customized according to your business requirements.";
-    }
-  }
-
+  
   // ============================================================
   // SERVICE OFFERS
   // ============================================================
@@ -274,7 +230,7 @@ class ServiceDetail extends StatelessWidget {
 
     final String subtitle = service['subtitle'] ?? '';
 
-    final String description = getDescription(title);
+    // final String description = getDescription(title);
 
     final List<String> offers = getOffers(title);
 
@@ -408,15 +364,15 @@ class ServiceDetail extends StatelessWidget {
                   // DESCRIPTION
                   // =================================================
 
-                  Text(
-                    description,
+                  // Text(
+                  //   description,
 
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 15,
-                      height: 1.7,
-                    ),
-                  ),
+                  //   style: const TextStyle(
+                  //     color: Colors.white70,
+                  //     fontSize: 15,
+                  //     height: 1.7,
+                  //   ),
+                  // ),
 
                   const SizedBox(height: 30),
 

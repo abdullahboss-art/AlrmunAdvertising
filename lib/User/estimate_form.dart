@@ -582,6 +582,10 @@ class CategoryGrid extends StatelessWidget {
 // TEXT FIELD
 // =============================================================
 
+// =============================================================
+// TEXT FIELD
+// =============================================================
+
 class EstimateTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
@@ -620,6 +624,7 @@ class EstimateTextField extends StatelessWidget {
 
         TextFormField(
           controller: controller,
+
           keyboardType: allowDecimal
               ? const TextInputType.numberWithOptions(
                   decimal: true,
@@ -630,14 +635,14 @@ class EstimateTextField extends StatelessWidget {
           // ONLY NUMBERS ALLOWED
           // =====================================================
 
-     inputFormatters: [
-  if (allowDecimal)
-    FilteringTextInputFormatter.allow(
-      RegExp(r'^\d*\.?\d*'),
-    )
-  else
-    FilteringTextInputFormatter.digitsOnly,
-],
+          inputFormatters: [
+            if (allowDecimal)
+              FilteringTextInputFormatter.allow(
+                RegExp(r'^\d*\.?\d*'),
+              )
+            else
+              FilteringTextInputFormatter.digitsOnly,
+          ],
 
           validator: validator,
 
@@ -694,11 +699,16 @@ class EstimateTextField extends StatelessWidget {
               ),
             ),
 
+            // =================================================
+            // RED ERROR BORDER
+            // =================================================
+
             errorBorder: OutlineInputBorder(
               borderRadius:
                   BorderRadius.circular(11),
               borderSide: const BorderSide(
                 color: Colors.redAccent,
+                width: 1.2,
               ),
             ),
 
@@ -708,19 +718,30 @@ class EstimateTextField extends StatelessWidget {
                   BorderRadius.circular(11),
               borderSide: const BorderSide(
                 color: Colors.redAccent,
+                width: 1.4,
               ),
             ),
 
+            // =================================================
+            // RED ERROR TEXT
+            // =================================================
+
             errorStyle: const TextStyle(
+              color: Colors.redAccent,
               fontSize: 8.5,
               height: 1.2,
+              fontWeight: FontWeight.w500,
             ),
+
+            errorMaxLines: 2,
           ),
         ),
       ],
     );
   }
 }
+
+  
 // =============================================================
 // MEASUREMENT DROPDOWN
 // =============================================================
