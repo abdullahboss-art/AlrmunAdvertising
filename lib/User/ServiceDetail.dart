@@ -360,21 +360,9 @@ class ServiceDetail extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
-                  // =================================================
-                  // DESCRIPTION
-                  // =================================================
+              
 
-                  // Text(
-                  //   description,
-
-                  //   style: const TextStyle(
-                  //     color: Colors.white70,
-                  //     fontSize: 15,
-                  //     height: 1.7,
-                  //   ),
-                  // ),
-
-                  const SizedBox(height: 30),
+               
 
                   // =================================================
                   // WHAT WE OFFER
