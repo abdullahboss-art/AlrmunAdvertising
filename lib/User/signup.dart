@@ -1,4 +1,3 @@
-
 import 'package:adverting_app/User/Login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,7 @@ class _SignupPageState extends State<SignupPage> {
   // YOUR APP THEME
   // =========================================================
 
-static const Color background = Color(0xFF0E1420);
+  static const Color background = Color(0xFF0E1420);
   static const Color card = Color(0xFF171B24);
 
   // Teal accent
@@ -64,10 +63,7 @@ static const Color background = Color(0xFF0E1420);
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-
-          // YOUR CARD COLOR
           backgroundColor: card,
-
           title: Row(
             children: [
               Icon(
@@ -88,7 +84,6 @@ static const Color background = Color(0xFF0E1420);
               ),
             ],
           ),
-
           content: Text(
             message,
             style: const TextStyle(
@@ -97,12 +92,10 @@ static const Color background = Color(0xFF0E1420);
               height: 1.5,
             ),
           ),
-
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-
                 if (isSuccess) {
                   Navigator.pushReplacement(
                     context,
@@ -140,16 +133,12 @@ static const Color background = Color(0xFF0E1420);
   void _pickCountryCode() {
     showModalBottomSheet(
       context: context,
-
-      // YOUR CARD COLOR
       backgroundColor: card,
-
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(20),
         ),
       ),
-
       builder: (context) {
         return SafeArea(
           child: ListView.builder(
@@ -157,25 +146,19 @@ static const Color background = Color(0xFF0E1420);
             itemCount: _countryCodes.length,
             itemBuilder: (context, index) {
               final country = _countryCodes[index];
-
               return ListTile(
                 leading: Text(
                   country["flag"]!,
-                  style: const TextStyle(
-                    fontSize: 22,
-                  ),
+                  style: const TextStyle(fontSize: 22),
                 ),
                 title: Text(
                   "${country["name"]} (${country["code"]})",
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 onTap: () {
                   setState(() {
                     _selectedCountry = country;
                   });
-
                   Navigator.pop(context);
                 },
               );
@@ -230,25 +213,19 @@ static const Color background = Color(0xFF0E1420);
       setState(() => loading = false);
 
       String errorMessage;
-
       switch (e.code) {
         case 'email-already-in-use':
           errorMessage =
               "An account already exists with this email.\nPlease login instead.";
           break;
-
         case 'invalid-email':
           errorMessage = "Email address is not valid.";
           break;
-
         case 'weak-password':
-          errorMessage =
-              "Password is too weak.\nUse at least 6 characters.";
+          errorMessage = "Password is too weak.\nUse at least 6 characters.";
           break;
-
         default:
-          errorMessage =
-              e.message ?? "Signup failed. Please try again.";
+          errorMessage = e.message ?? "Signup failed. Please try again.";
       }
 
       if (mounted) {
@@ -263,8 +240,7 @@ static const Color background = Color(0xFF0E1420);
       if (mounted) {
         showAlertDialog(
           title: "Error",
-          message:
-              "Something went wrong.\nPlease try again later.",
+          message: "Something went wrong.\nPlease try again later.",
         );
       }
     }
@@ -274,67 +250,40 @@ static const Color background = Color(0xFF0E1420);
   // FIELD DECORATION
   // =========================================================
 
-  InputDecoration _fieldDecoration(
-    String hint,
-    IconData icon,
-  ) {
+  InputDecoration _fieldDecoration(String hint, IconData icon) {
     return InputDecoration(
       hintText: hint,
-
       hintStyle: const TextStyle(
         color: Colors.white38,
         fontSize: 14,
       ),
-
       prefixIcon: Icon(
         icon,
         color: Colors.white38,
         size: 20,
       ),
-
       filled: true,
-
-      // YOUR CARD COLOR
       fillColor: card,
-
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 16,
-      ),
-
+      contentPadding: const EdgeInsets.symmetric(vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: Colors.white12,
-        ),
+        borderSide: const BorderSide(color: Colors.white12),
       ),
-
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: Colors.white12,
-        ),
+        borderSide: const BorderSide(color: Colors.white12),
       ),
-
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: tealColor,
-          width: 1.5,
-        ),
+        borderSide: const BorderSide(color: tealColor, width: 1.5),
       ),
-
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: Colors.redAccent,
-        ),
+        borderSide: const BorderSide(color: Colors.redAccent),
       ),
-
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(
-          color: Colors.redAccent,
-        ),
+        borderSide: const BorderSide(color: Colors.redAccent),
       ),
     );
   }
@@ -345,10 +294,7 @@ static const Color background = Color(0xFF0E1420);
 
   Widget _label(String text) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 8,
-        top: 20,
-      ),
+      padding: const EdgeInsets.only(bottom: 8, top: 20),
       child: Text(
         text,
         style: const TextStyle(
@@ -370,7 +316,6 @@ static const Color background = Color(0xFF0E1420);
     emailController.dispose();
     phoneController.dispose();
     passwordController.dispose();
-
     super.dispose();
   }
 
@@ -381,23 +326,15 @@ static const Color background = Color(0xFF0E1420);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      // YOUR BACKGROUND COLOR
       backgroundColor: background,
-
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-          ),
-
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Form(
             key: _formKey,
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 const SizedBox(height: 12),
 
                 // BACK BUTTON
@@ -411,7 +348,22 @@ static const Color background = Color(0xFF0E1420);
                   alignment: Alignment.centerLeft,
                 ),
 
+                // =================================================
+                // LOGO (same as Login page, for theme consistency)
+                // =================================================
+
                 const SizedBox(height: 8),
+
+                Center(
+                  child: Image.asset(
+                    "images/assets/Alrmun_logo.png",
+                    height: 140,
+                    width: 140,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                const SizedBox(height: 24),
 
                 // TITLE
                 const Text(
@@ -441,21 +393,15 @@ static const Color background = Color(0xFF0E1420);
 
                 TextFormField(
                   controller: fullNameController,
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-
+                  style: const TextStyle(color: Colors.white),
                   decoration: _fieldDecoration(
                     "Enter full name",
                     Icons.person_outline,
                   ),
-
                   validator: (value) {
-                    if (value == null ||
-                        value.trim().isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return "Please enter your full name";
                     }
-
                     return null;
                   },
                 ),
@@ -468,28 +414,19 @@ static const Color background = Color(0xFF0E1420);
 
                 TextFormField(
                   controller: emailController,
-                  keyboardType:
-                      TextInputType.emailAddress,
-
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-
+                  keyboardType: TextInputType.emailAddress,
+                  style: const TextStyle(color: Colors.white),
                   decoration: _fieldDecoration(
                     "Enter email address",
                     Icons.email_outlined,
                   ),
-
                   validator: (value) {
-                    if (value == null ||
-                        value.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return "Please enter email";
                     }
-
                     if (!value.contains("@")) {
                       return "Enter valid email";
                     }
-
                     return null;
                   },
                 ),
@@ -502,59 +439,32 @@ static const Color background = Color(0xFF0E1420);
 
                 Row(
                   children: [
-
                     InkWell(
                       onTap: _pickCountryCode,
-
-                      borderRadius:
-                          BorderRadius.circular(12),
-
+                      borderRadius: BorderRadius.circular(12),
                       child: Container(
                         height: 54,
-
-                        padding:
-                            const EdgeInsets.symmetric(
-                          horizontal: 12,
-                        ),
-
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-
-                          // YOUR CARD COLOR
                           color: card,
-
-                          borderRadius:
-                              BorderRadius.circular(12),
-
-                          border: Border.all(
-                            color: Colors.white12,
-                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white12),
                         ),
-
                         child: Row(
-                          mainAxisSize:
-                              MainAxisSize.min,
-
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-
                             Text(
                               _selectedCountry["flag"]!,
-                              style:
-                                  const TextStyle(
-                                fontSize: 18,
-                              ),
+                              style: const TextStyle(fontSize: 18),
                             ),
-
                             const SizedBox(width: 6),
-
                             Text(
                               _selectedCountry["code"]!,
-                              style:
-                                  const TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                               ),
                             ),
-
                             const Icon(
                               Icons.keyboard_arrow_down,
                               color: Colors.white54,
@@ -564,36 +474,23 @@ static const Color background = Color(0xFF0E1420);
                         ),
                       ),
                     ),
-
                     const SizedBox(width: 10),
-
                     Expanded(
                       child: TextFormField(
                         controller: phoneController,
-
-                        keyboardType:
-                            TextInputType.phone,
-
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-
-                        decoration:
-                            _fieldDecoration(
+                        keyboardType: TextInputType.phone,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: _fieldDecoration(
                           "Enter phone number",
                           Icons.phone_outlined,
                         ),
-
                         validator: (value) {
-                          if (value == null ||
-                              value.trim().isEmpty) {
+                          if (value == null || value.trim().isEmpty) {
                             return "Please enter phone number";
                           }
-
                           if (value.trim().length < 7) {
                             return "Enter a valid phone number";
                           }
-
                           return null;
                         },
                       ),
@@ -609,15 +506,9 @@ static const Color background = Color(0xFF0E1420);
 
                 TextFormField(
                   controller: passwordController,
-
                   obscureText: obscurePassword,
-
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-
-                  decoration:
-                      _fieldDecoration(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: _fieldDecoration(
                     "Enter password",
                     Icons.lock_outline,
                   ).copyWith(
@@ -629,26 +520,20 @@ static const Color background = Color(0xFF0E1420);
                         color: Colors.white38,
                         size: 20,
                       ),
-
                       onPressed: () {
                         setState(() {
-                          obscurePassword =
-                              !obscurePassword;
+                          obscurePassword = !obscurePassword;
                         });
                       },
                     ),
                   ),
-
                   validator: (value) {
-                    if (value == null ||
-                        value.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return "Please enter password";
                     }
-
                     if (value.length < 6) {
                       return "Password must be at least 6 characters";
                     }
-
                     return null;
                   },
                 ),
@@ -660,44 +545,27 @@ static const Color background = Color(0xFF0E1420);
                 // =================================================
 
                 Row(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
-
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     SizedBox(
                       height: 24,
                       width: 24,
-
                       child: Checkbox(
                         value: agreedToTerms,
-
                         activeColor: tealColor,
-
                         checkColor: Colors.black,
-
-                        side: const BorderSide(
-                          color: Colors.white38,
-                        ),
-
+                        side: const BorderSide(color: Colors.white38),
                         onChanged: (value) {
                           setState(() {
-                            agreedToTerms =
-                                value ?? false;
+                            agreedToTerms = value ?? false;
                           });
                         },
                       ),
                     ),
-
                     const SizedBox(width: 10),
-
                     Expanded(
                       child: Padding(
-                        padding:
-                            const EdgeInsets.only(
-                          top: 3,
-                        ),
-
+                        padding: const EdgeInsets.only(top: 3),
                         child: RichText(
                           text: const TextSpan(
                             style: TextStyle(
@@ -705,35 +573,21 @@ static const Color background = Color(0xFF0E1420);
                               fontSize: 13,
                               height: 1.4,
                             ),
-
                             children: [
-
+                              TextSpan(text: "I agree to the "),
                               TextSpan(
-                                text:
-                                    "I agree to the ",
-                              ),
-
-                              TextSpan(
-                                text:
-                                    "Terms & Conditions",
+                                text: "Terms & Conditions",
                                 style: TextStyle(
                                   color: tealColor,
-                                  fontWeight:
-                                      FontWeight.w600,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-
+                              TextSpan(text: "\nand "),
                               TextSpan(
-                                text: "\nand ",
-                              ),
-
-                              TextSpan(
-                                text:
-                                    "Privacy Policy",
+                                text: "Privacy Policy",
                                 style: TextStyle(
                                   color: tealColor,
-                                  fontWeight:
-                                      FontWeight.w600,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
@@ -753,46 +607,31 @@ static const Color background = Color(0xFF0E1420);
                 SizedBox(
                   width: double.infinity,
                   height: 55,
-
                   child: ElevatedButton(
-                    onPressed:
-                        loading ? null : signupUser,
-
-                    style:
-                        ElevatedButton.styleFrom(
+                    onPressed: loading ? null : signupUser,
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: tealColor,
-
-                      disabledBackgroundColor:
-                          tealColor.withOpacity(0.5),
-
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(15),
+                      disabledBackgroundColor: tealColor.withOpacity(0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-
                       elevation: 0,
                     ),
-
                     child: loading
                         ? const SizedBox(
                             height: 24,
                             width: 24,
-
-                            child:
-                                CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2.5,
                             ),
                           )
-
                         : const Text(
                             "Sign Up",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                   ),
@@ -806,29 +645,23 @@ static const Color background = Color(0xFF0E1420);
 
                 Center(
                   child: TextButton(
-                    onPressed: () =>
-                        Navigator.pop(context),
-
+                    onPressed: () => Navigator.pop(context),
                     child: RichText(
                       text: const TextSpan(
                         children: [
-
                           TextSpan(
-                            text:
-                                "Already have an account?  ",
+                            text: "Already have an account?  ",
                             style: TextStyle(
                               color: Colors.white54,
                               fontSize: 14,
                             ),
                           ),
-
                           TextSpan(
                             text: "Login",
                             style: TextStyle(
                               color: tealColor,
                               fontSize: 14,
-                              fontWeight:
-                                  FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -846,4 +679,3 @@ static const Color background = Color(0xFF0E1420);
     );
   }
 }
-
