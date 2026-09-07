@@ -1,7 +1,7 @@
+
 import 'package:adverting_app/User/Login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -22,7 +22,20 @@ class _SignupPageState extends State<SignupPage> {
   bool obscurePassword = true;
   bool agreedToTerms = false;
 
-  // Simple built-in country code list — no extra package required.
+  // =========================================================
+  // YOUR APP THEME
+  // =========================================================
+
+static const Color background = Color(0xFF0E1420);
+  static const Color card = Color(0xFF171B24);
+
+  // Teal accent
+  static const Color tealColor = Color(0xFF2DD4BF);
+
+  // =========================================================
+  // COUNTRY CODES
+  // =========================================================
+
   final List<Map<String, String>> _countryCodes = const [
     {"flag": "🇵🇰", "code": "+92", "name": "Pakistan"},
     {"flag": "🇮🇳", "code": "+91", "name": "India"},
@@ -31,7 +44,12 @@ class _SignupPageState extends State<SignupPage> {
     {"flag": "🇦🇪", "code": "+971", "name": "UAE"},
     {"flag": "🇸🇦", "code": "+966", "name": "Saudi Arabia"},
   ];
+
   late Map<String, String> _selectedCountry = _countryCodes[0];
+
+  // =========================================================
+  // ALERT DIALOG
+  // =========================================================
 
   void showAlertDialog({
     required String title,
@@ -46,12 +64,15 @@ class _SignupPageState extends State<SignupPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          backgroundColor: Colors.grey.shade900,
+
+          // YOUR CARD COLOR
+          backgroundColor: card,
+
           title: Row(
             children: [
               Icon(
                 isSuccess ? Icons.check_circle : Icons.error,
-                color: isSuccess ? Colors.teal : Colors.red,
+                color: isSuccess ? tealColor : Colors.redAccent,
                 size: 30,
               ),
               const SizedBox(width: 10),
@@ -67,6 +88,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ],
           ),
+
           content: Text(
             message,
             style: const TextStyle(
@@ -75,25 +97,34 @@ class _SignupPageState extends State<SignupPage> {
               height: 1.5,
             ),
           ),
+
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+
                 if (isSuccess) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                    MaterialPageRoute(
+                      builder: (_) => const LoginPage(),
+                    ),
                   );
                 }
               },
               style: TextButton.styleFrom(
-                foregroundColor: Colors.teal,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                foregroundColor: tealColor,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
               ),
               child: const Text(
                 "OK",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -102,13 +133,23 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  // =========================================================
+  // COUNTRY PICKER
+  // =========================================================
+
   void _pickCountryCode() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.grey.shade900,
+
+      // YOUR CARD COLOR
+      backgroundColor: card,
+
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
       ),
+
       builder: (context) {
         return SafeArea(
           child: ListView.builder(
@@ -116,15 +157,25 @@ class _SignupPageState extends State<SignupPage> {
             itemCount: _countryCodes.length,
             itemBuilder: (context, index) {
               final country = _countryCodes[index];
+
               return ListTile(
-                leading: Text(country["flag"]!,
-                    style: const TextStyle(fontSize: 22)),
+                leading: Text(
+                  country["flag"]!,
+                  style: const TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
                 title: Text(
                   "${country["name"]} (${country["code"]})",
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
                 onTap: () {
-                  setState(() => _selectedCountry = country);
+                  setState(() {
+                    _selectedCountry = country;
+                  });
+
                   Navigator.pop(context);
                 },
               );
@@ -135,14 +186,18 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  // =========================================================
+  // SIGNUP
+  // =========================================================
+
   Future<void> signupUser() async {
     if (!_formKey.currentState!.validate()) return;
 
     if (!agreedToTerms) {
       showAlertDialog(
         title: "Almost there!",
-        message: "Please agree to the Terms & Conditions and Privacy Policy to continue.",
-        isSuccess: false,
+        message:
+            "Please agree to the Terms & Conditions and Privacy Policy to continue.",
       );
       return;
     }
@@ -156,13 +211,11 @@ class _SignupPageState extends State<SignupPage> {
         password: passwordController.text.trim(),
       );
 
-      await userCredential.user?.updateDisplayName(fullNameController.text.trim());
-      await userCredential.user?.reload();
+      await userCredential.user?.updateDisplayName(
+        fullNameController.text.trim(),
+      );
 
-      // 👉 If you're saving extra profile data (full name, phone) to
-      // Firestore/Realtime DB, do it here using userCredential.user!.uid,
-      // e.g. fullNameController.text.trim() and
-      // "${_selectedCountry["code"]}${phoneController.text.trim()}".
+      await userCredential.user?.reload();
 
       setState(() => loading = false);
 
@@ -177,74 +230,125 @@ class _SignupPageState extends State<SignupPage> {
       setState(() => loading = false);
 
       String errorMessage;
+
       switch (e.code) {
         case 'email-already-in-use':
-          errorMessage = "An account already exists with this email.\nPlease login instead.";
+          errorMessage =
+              "An account already exists with this email.\nPlease login instead.";
           break;
+
         case 'invalid-email':
           errorMessage = "Email address is not valid.";
           break;
+
         case 'weak-password':
-          errorMessage = "Password is too weak.\nUse at least 6 characters.";
+          errorMessage =
+              "Password is too weak.\nUse at least 6 characters.";
           break;
+
         default:
-          errorMessage = e.message ?? "Signup failed. Please try again.";
+          errorMessage =
+              e.message ?? "Signup failed. Please try again.";
       }
 
       if (mounted) {
-        showAlertDialog(title: "Signup Failed", message: errorMessage, isSuccess: false);
+        showAlertDialog(
+          title: "Signup Failed",
+          message: errorMessage,
+        );
       }
     } catch (e) {
       setState(() => loading = false);
+
       if (mounted) {
         showAlertDialog(
           title: "Error",
-          message: "Something went wrong.\nPlease try again later.",
-          isSuccess: false,
+          message:
+              "Something went wrong.\nPlease try again later.",
         );
       }
     }
   }
 
-  @override
-  void dispose() {
-    fullNameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
+  // =========================================================
+  // FIELD DECORATION
+  // =========================================================
 
-  InputDecoration _fieldDecoration(String hint, IconData icon) {
+  InputDecoration _fieldDecoration(
+    String hint,
+    IconData icon,
+  ) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.white38, fontSize: 14),
-      prefixIcon: Icon(icon, color: Colors.white38, size: 20),
+
+      hintStyle: const TextStyle(
+        color: Colors.white38,
+        fontSize: 14,
+      ),
+
+      prefixIcon: Icon(
+        icon,
+        color: Colors.white38,
+        size: 20,
+      ),
+
       filled: true,
-      fillColor: Colors.grey.shade900,
-      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+
+      // YOUR CARD COLOR
+      fillColor: card,
+
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 16,
+      ),
+
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.white12),
+        borderSide: const BorderSide(
+          color: Colors.white12,
+        ),
       ),
+
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.white12),
+        borderSide: const BorderSide(
+          color: Colors.white12,
+        ),
       ),
+
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.teal),
+        borderSide: const BorderSide(
+          color: tealColor,
+          width: 1.5,
+        ),
       ),
+
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.redAccent),
+        borderSide: const BorderSide(
+          color: Colors.redAccent,
+        ),
+      ),
+
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(
+          color: Colors.redAccent,
+        ),
       ),
     );
   }
 
+  // =========================================================
+  // LABEL
+  // =========================================================
+
   Widget _label(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8, top: 20),
+      padding: const EdgeInsets.only(
+        bottom: 8,
+        top: 20,
+      ),
       child: Text(
         text,
         style: const TextStyle(
@@ -256,26 +360,60 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  // =========================================================
+  // DISPOSE
+  // =========================================================
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+
+    super.dispose();
+  }
+
+  // =========================================================
+  // BUILD
+  // =========================================================
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+
+      // YOUR BACKGROUND COLOR
+      backgroundColor: background,
+
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+          ),
+
           child: Form(
             key: _formKey,
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 const SizedBox(height: 12),
+
+                // BACK BUTTON
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
                   padding: EdgeInsets.zero,
                   alignment: Alignment.centerLeft,
                 ),
+
                 const SizedBox(height: 8),
+
+                // TITLE
                 const Text(
                   "Create Account",
                   style: TextStyle(
@@ -284,86 +422,178 @@ class _SignupPageState extends State<SignupPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 6),
+
                 const Text(
                   "Let's get started",
-                  style: TextStyle(color: Colors.white54, fontSize: 15),
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 15,
+                  ),
                 ),
 
+                // =================================================
+                // FULL NAME
+                // =================================================
+
                 _label("Full Name"),
+
                 TextFormField(
                   controller: fullNameController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: _fieldDecoration("Enter full name", Icons.person_outline),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+
+                  decoration: _fieldDecoration(
+                    "Enter full name",
+                    Icons.person_outline,
+                  ),
+
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
+                    if (value == null ||
+                        value.trim().isEmpty) {
                       return "Please enter your full name";
                     }
+
                     return null;
                   },
                 ),
 
+                // =================================================
+                // EMAIL
+                // =================================================
+
                 _label("Email Address"),
+
                 TextFormField(
                   controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: _fieldDecoration("Enter email address", Icons.email_outlined),
+                  keyboardType:
+                      TextInputType.emailAddress,
+
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+
+                  decoration: _fieldDecoration(
+                    "Enter email address",
+                    Icons.email_outlined,
+                  ),
+
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null ||
+                        value.isEmpty) {
                       return "Please enter email";
                     }
+
                     if (!value.contains("@")) {
                       return "Enter valid email";
                     }
+
                     return null;
                   },
                 ),
 
+                // =================================================
+                // PHONE
+                // =================================================
+
                 _label("Phone Number"),
+
                 Row(
                   children: [
+
                     InkWell(
                       onTap: _pickCountryCode,
-                      borderRadius: BorderRadius.circular(12),
+
+                      borderRadius:
+                          BorderRadius.circular(12),
+
                       child: Container(
                         height: 54,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade900,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.white12),
+
+                        padding:
+                            const EdgeInsets.symmetric(
+                          horizontal: 12,
                         ),
+
+                        decoration: BoxDecoration(
+
+                          // YOUR CARD COLOR
+                          color: card,
+
+                          borderRadius:
+                              BorderRadius.circular(12),
+
+                          border: Border.all(
+                            color: Colors.white12,
+                          ),
+                        ),
+
                         child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize:
+                              MainAxisSize.min,
+
                           children: [
-                            Text(_selectedCountry["flag"]!,
-                                style: const TextStyle(fontSize: 18)),
+
+                            Text(
+                              _selectedCountry["flag"]!,
+                              style:
+                                  const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+
                             const SizedBox(width: 6),
+
                             Text(
                               _selectedCountry["code"]!,
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
+                              style:
+                                  const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
                             ),
-                            const Icon(Icons.keyboard_arrow_down,
-                                color: Colors.white54, size: 18),
+
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.white54,
+                              size: 18,
+                            ),
                           ],
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 10),
+
                     Expanded(
                       child: TextFormField(
                         controller: phoneController,
-                        keyboardType: TextInputType.phone,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: _fieldDecoration("Enter phone number", Icons.phone_outlined),
+
+                        keyboardType:
+                            TextInputType.phone,
+
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+
+                        decoration:
+                            _fieldDecoration(
+                          "Enter phone number",
+                          Icons.phone_outlined,
+                        ),
+
                         validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
+                          if (value == null ||
+                              value.trim().isEmpty) {
                             return "Please enter phone number";
                           }
+
                           if (value.trim().length < 7) {
                             return "Enter a valid phone number";
                           }
+
                           return null;
                         },
                       ),
@@ -371,65 +601,140 @@ class _SignupPageState extends State<SignupPage> {
                   ],
                 ),
 
+                // =================================================
+                // PASSWORD
+                // =================================================
+
                 _label("Password"),
+
                 TextFormField(
                   controller: passwordController,
+
                   obscureText: obscurePassword,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: _fieldDecoration("Enter password", Icons.lock_outline).copyWith(
+
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+
+                  decoration:
+                      _fieldDecoration(
+                    "Enter password",
+                    Icons.lock_outline,
+                  ).copyWith(
                     suffixIcon: IconButton(
                       icon: Icon(
-                        obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                         color: Colors.white38,
                         size: 20,
                       ),
-                      onPressed: () => setState(() => obscurePassword = !obscurePassword),
+
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword =
+                              !obscurePassword;
+                        });
+                      },
                     ),
                   ),
+
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null ||
+                        value.isEmpty) {
                       return "Please enter password";
                     }
+
                     if (value.length < 6) {
                       return "Password must be at least 6 characters";
                     }
+
                     return null;
                   },
                 ),
 
                 const SizedBox(height: 20),
+
+                // =================================================
+                // TERMS
+                // =================================================
+
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+
                   children: [
+
                     SizedBox(
                       height: 24,
                       width: 24,
+
                       child: Checkbox(
                         value: agreedToTerms,
-                        activeColor: Colors.teal,
+
+                        activeColor: tealColor,
+
                         checkColor: Colors.black,
-                        side: const BorderSide(color: Colors.white38),
-                        onChanged: (value) =>
-                            setState(() => agreedToTerms = value ?? false),
+
+                        side: const BorderSide(
+                          color: Colors.white38,
+                        ),
+
+                        onChanged: (value) {
+                          setState(() {
+                            agreedToTerms =
+                                value ?? false;
+                          });
+                        },
                       ),
                     ),
+
                     const SizedBox(width: 10),
+
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 3),
+                        padding:
+                            const EdgeInsets.only(
+                          top: 3,
+                        ),
+
                         child: RichText(
                           text: const TextSpan(
-                            style: TextStyle(color: Colors.white54, fontSize: 13, height: 1.4),
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 13,
+                              height: 1.4,
+                            ),
+
                             children: [
-                              TextSpan(text: "I agree to the "),
+
                               TextSpan(
-                                text: "Terms & Conditions",
-                                style: TextStyle(color: Colors.teal, fontWeight: FontWeight.w600),
+                                text:
+                                    "I agree to the ",
                               ),
-                              TextSpan(text: "\nand "),
+
                               TextSpan(
-                                text: "Privacy Policy",
-                                style: TextStyle(color: Colors.teal, fontWeight: FontWeight.w600),
+                                text:
+                                    "Terms & Conditions",
+                                style: TextStyle(
+                                  color: tealColor,
+                                  fontWeight:
+                                      FontWeight.w600,
+                                ),
+                              ),
+
+                              TextSpan(
+                                text: "\nand ",
+                              ),
+
+                              TextSpan(
+                                text:
+                                    "Privacy Policy",
+                                style: TextStyle(
+                                  color: tealColor,
+                                  fontWeight:
+                                      FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
@@ -440,54 +745,90 @@ class _SignupPageState extends State<SignupPage> {
                 ),
 
                 const SizedBox(height: 26),
+
+                // =================================================
+                // SIGNUP BUTTON
+                // =================================================
+
                 SizedBox(
                   width: double.infinity,
                   height: 55,
+
                   child: ElevatedButton(
-                    onPressed: loading ? null : signupUser,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                    onPressed:
+                        loading ? null : signupUser,
+
+                    style:
+                        ElevatedButton.styleFrom(
+                      backgroundColor: tealColor,
+
+                      disabledBackgroundColor:
+                          tealColor.withOpacity(0.5),
+
+                      shape:
+                          RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(15),
                       ),
+
+                      elevation: 0,
                     ),
+
                     child: loading
                         ? const SizedBox(
                             height: 24,
                             width: 24,
-                            child: CircularProgressIndicator(
+
+                            child:
+                                CircularProgressIndicator(
                               color: Colors.white,
                               strokeWidth: 2.5,
                             ),
                           )
+
                         : const Text(
                             "Sign Up",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontWeight:
+                                  FontWeight.bold,
                             ),
                           ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
+
+                // =================================================
+                // LOGIN
+                // =================================================
+
                 Center(
                   child: TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () =>
+                        Navigator.pop(context),
+
                     child: RichText(
                       text: const TextSpan(
                         children: [
+
                           TextSpan(
-                            text: "Already have an account?  ",
-                            style: TextStyle(color: Colors.white54, fontSize: 14),
+                            text:
+                                "Already have an account?  ",
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 14,
+                            ),
                           ),
+
                           TextSpan(
                             text: "Login",
                             style: TextStyle(
-                              color: Colors.teal,
+                              color: tealColor,
                               fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                              fontWeight:
+                                  FontWeight.bold,
                             ),
                           ),
                         ],
@@ -495,6 +836,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 30),
               ],
             ),
@@ -504,3 +846,4 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+

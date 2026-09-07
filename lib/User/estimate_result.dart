@@ -108,7 +108,7 @@ class EstimateResultCard extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: EstimateColors.fieldColor,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14),    
               border: Border.all(
                 color: EstimateColors.accent.withOpacity(0.18),
               ),
